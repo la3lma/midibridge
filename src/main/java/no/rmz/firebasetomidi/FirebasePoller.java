@@ -3,7 +3,6 @@ package no.rmz.firebasetomidi;
 import java.io.IOException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
-import no.rmz.eventgenerators.JitterPreventionFailureException;
 import no.rmz.sequencer.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +38,10 @@ public final class FirebasePoller {
      * @throws SequencerException
      * @throws IOException
      * @throws InterruptedException
-     * @throws JitterPreventionFailureException
      * @throws javax.sound.midi.MidiUnavailableException
      */
     public final static void main(final String[] argv) throws SequencerException,
-            IOException, InterruptedException, JitterPreventionFailureException, MidiUnavailableException {
+            IOException, InterruptedException, MidiUnavailableException {
 
         LOG.info("Getting started");
 

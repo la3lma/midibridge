@@ -15,12 +15,10 @@ import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.ShortMessage;
 import no.rmz.chordguesser.midi.MidiCmd;
-import no.rmz.eventgenerators.EventReceiver;
-import no.rmz.sequencer.EventSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class FBMidiReadingEventGenerator implements EventSource {
+public final class FBMidiReadingEventGenerator {
 
     private static final Logger LOG = LoggerFactory.getLogger(FBMidiReadingEventGenerator.class);
     private String configFile;
@@ -28,7 +26,6 @@ public final class FBMidiReadingEventGenerator implements EventSource {
     private FirebaseDatabase firebaseDatabase;
     private DatabaseReference midiInputMessages;
     private final String eventpath;
-    private final EventExecutor eventExecutor;
 
     public static ShortMessage asShortMessage(final FbMidiEventBean bean) {
         checkNotNull(bean);
@@ -67,7 +64,7 @@ public final class FBMidiReadingEventGenerator implements EventSource {
         this.configFile = Preconditions.checkNotNull(configFile);
         this.databaseName = Preconditions.checkNotNull(databaseName);
         this.eventpath = Preconditions.checkNotNull(eventpath);
-        this.eventExecutor = new EventExecutor();
+
         try (final FileInputStream serviceAccount = new FileInputStream(configFile)) {
             final FirebaseOptions options = new FirebaseOptions.Builder().setCredential(FirebaseCredentials.fromCertificate(serviceAccount)).setDatabaseUrl("https://" + databaseName + ".firebaseio.com/").build();
             try {
@@ -145,15 +142,4 @@ public final class FBMidiReadingEventGenerator implements EventSource {
     // The methods below are added just to
     // fulfill the interface contract, they don't actually
     // do anything.
-
-    @Override
-    public void start() {
-        // DO we need to start anything?
-    }
-
-    @Override
-    public void addReceiver(final EventReceiver receiver) {
-        LOG.info("foo");
-        eventExecutor.addMidiEventListener((FbMidiEventListener) receiver);
-    }
 }
