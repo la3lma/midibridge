@@ -1,4 +1,4 @@
-package no.rmz.sequencer;
+package no.rmz.firebasetomidi;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;
