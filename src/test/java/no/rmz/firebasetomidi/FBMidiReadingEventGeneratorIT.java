@@ -7,7 +7,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import no.rmz.midibridge.BufferedMidiReceiver;
-import no.rmz.midibridge.FBMidiReadingEventGenerator;
+import no.rmz.midibridge.FbMidiReadingEventGenerator;
 import no.rmz.midibridge.IacDeviceUtilities;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
@@ -42,8 +42,8 @@ public class FBMidiReadingEventGeneratorIT {
         };
 
 
-        final FBMidiReadingEventGenerator midiReadingEventSource;
-        midiReadingEventSource = new FBMidiReadingEventGenerator(databaseName, configFile, pathToListenForEventsIn, latchingReceiver);
+        final FbMidiReadingEventGenerator midiReadingEventSource;
+        midiReadingEventSource = new FbMidiReadingEventGenerator(databaseName, configFile, pathToListenForEventsIn, latchingReceiver);
 
         if (!latch.await(10, TimeUnit.SECONDS)) {
             fail("Couldn't receive sample MIDI message through firebase.  So sad.");

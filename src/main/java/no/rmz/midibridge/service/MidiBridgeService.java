@@ -6,7 +6,7 @@ import io.dropwizard.setup.Environment;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import no.rmz.midibridge.BufferedMidiReceiver;
-import no.rmz.midibridge.FBMidiReadingEventGenerator;
+import no.rmz.midibridge.FbMidiReadingEventGenerator;
 import no.rmz.midibridge.IacDeviceUtilities;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
@@ -45,8 +45,8 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
             mr = new BufferedMidiReceiver(midiDevice.getReceiver());
 
             // XXX Tie this into the lifecycle of dropwizard objects.
-            FBMidiReadingEventGenerator midiReadingEventSource
-                    = new FBMidiReadingEventGenerator(databaseName, configFile, pathToListenForEventsIn, mr);
+            FbMidiReadingEventGenerator midiReadingEventSource
+                    = new FbMidiReadingEventGenerator(databaseName, configFile, pathToListenForEventsIn, mr);
 
         } catch (MidibridgeException | MidiUnavailableException e) {
             throw new RuntimeException(e);

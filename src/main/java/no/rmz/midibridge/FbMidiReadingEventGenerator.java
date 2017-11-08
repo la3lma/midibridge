@@ -13,9 +13,9 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class FBMidiReadingEventGenerator {
+public final class FbMidiReadingEventGenerator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FBMidiReadingEventGenerator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FbMidiReadingEventGenerator.class);
 
     private final FirebaseDatabase firebaseDatabase;
     private final DatabaseReference midiInputMessages;
@@ -53,7 +53,7 @@ public final class FBMidiReadingEventGenerator {
         }
     }
 
-    public FBMidiReadingEventGenerator(
+    public FbMidiReadingEventGenerator(
             final String databaseName,
             final String configFile,
             final String eventpath,
