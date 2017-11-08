@@ -25,4 +25,9 @@ public final class MidiRoute {
     public void setDestination(String destination) {
         this.destination = destination;
     }
+
+    @Override
+    public String toString() {
+        return "MidiRoute{" + "source=" + source + ", destination=" + destination + '}';
+    }
 }

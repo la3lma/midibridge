@@ -48,4 +48,10 @@ public final class MidibridgeConfiguration extends Configuration {
     public void setFirebaseDestinations(final List<FirebaseDestination> firebaseDestinations) {
         this.firebaseDestinations = firebaseDestinations;
     }
+
+    @Override
+    public String toString() {
+        return "MidibridgeConfiguration{" + "firebaseDatabaseConfig=" + firebaseDatabaseConfig + ", firebaseDestinations=" + firebaseDestinations + ", midiDestinations=" + midiDestinations + ", midiRoutes=" + midiRoutes + '}';
+    }
+
 }

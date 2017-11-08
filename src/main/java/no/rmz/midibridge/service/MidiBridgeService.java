@@ -1,6 +1,5 @@
 package no.rmz.midibridge.service;
 
-import no.rmz.midibridge.config.MidibridgeConfiguration;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -11,6 +10,7 @@ import no.rmz.midibridge.FbMidiReadingEventGenerator;
 import no.rmz.midibridge.IacDeviceUtilities;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
+import no.rmz.midibridge.config.MidibridgeConfiguration;
 
 public class MidiBridgeService extends Application<MidibridgeConfiguration> {
 
@@ -37,10 +37,10 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         // These should be gotten from the the config file instead, and perhaps even
         // do most of the initializations in the initialize method instead of the
         // run method.
-        final String configFile = "fbmidibridge-1746b45f5da7.json";  // arg2
-        final String databaseName = "fbmidibridge"; // arg1
-        final String pathToListenForEventsIn = "testchannel"; // arg3
-        final String midiDeviceName = "toReason"; // arg4
+        final String configFile = "fbmidibridge-1746b45f5da7.json";
+        final String databaseName = "fbmidibridge";
+        final String pathToListenForEventsIn = "testchannel";
+        final String midiDeviceName = "toReason";
 
         final MidiReceiver mr;
         try {
@@ -50,7 +50,11 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
 
             // XXX Tie this into the lifecycle of dropwizard objects.
             FbMidiReadingEventGenerator midiReadingEventSource
-                    = new FbMidiReadingEventGenerator(databaseName, configFile, pathToListenForEventsIn, mr);
+                    = new FbMidiReadingEventGenerator(
+                            databaseName,
+                            configFile,
+                            pathToListenForEventsIn,
+                            mr);
 
         } catch (MidibridgeException | MidiUnavailableException e) {
             throw new RuntimeException(e);

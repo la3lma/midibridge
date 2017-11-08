@@ -27,4 +27,8 @@ public final class MidiDestination {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "MidiDestination{" + "id=" + id + ", midiDeviceName=" + midiDeviceName + '}';
+    }
 }

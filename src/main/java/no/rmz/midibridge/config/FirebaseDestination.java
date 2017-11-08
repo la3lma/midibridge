@@ -26,4 +26,8 @@ public final class FirebaseDestination {
         this.path = path;
     }
 
+    @Override
+    public String toString() {
+        return "FirebaseDestination{" + "id=" + id + ", path=" + path + '}';
+    }
 }

@@ -21,4 +21,9 @@ public class FirebaseDatabaseConfig {
     public void setDatabaseName(String databaseName) {
         this.databaseName = databaseName;
     }
+
+    @Override
+    public String toString() {
+        return "FirebaseDatabaseConfig{" + "configFile=" + configFile + ", databaseName=" + databaseName + '}';
+    }
 }
