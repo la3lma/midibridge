@@ -7,7 +7,7 @@ public final class FbMidiEventBean {
     private String cmd;
     private int chan;
     private int note;
-    private int strength;
+    private int velocity;
 
     public FbMidiEventBean() {
     }
@@ -24,9 +24,6 @@ public final class FbMidiEventBean {
         this.note = note;
     }
 
-    public void setStrength(int strength) {
-        this.strength = strength;
-    }
 
     @JsonProperty
     public String getCmd() {
@@ -44,13 +41,16 @@ public final class FbMidiEventBean {
     }
 
     @JsonProperty
-    // XXX Should be "getVelocity"
-    public int getStrength() {
-        return strength;
+    public int getVelocity() {
+        return velocity;
+    }
+
+    public void setVelocity(int velocity) {
+        this.velocity = velocity;
     }
 
     @Override
     public String toString() {
-        return "FbMidiEventBean{" + "cmd=" + cmd + ", chan=" + chan + ", note=" + note + ", strength=" + strength + '}';
+        return "FbMidiEventBean{" + "cmd=" + cmd + ", chan=" + chan + ", note=" + note + ", velocity=" + velocity + '}';
     }
 }
