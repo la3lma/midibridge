@@ -3,7 +3,6 @@ package no.rmz.firebasetomidi;
 import java.io.IOException;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
-import no.rmz.sequencer.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
