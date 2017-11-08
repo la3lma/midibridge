@@ -1,5 +1,6 @@
 package no.rmz.midibridge.service;
 
+import no.rmz.midibridge.config.MidibridgeConfiguration;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -14,7 +15,7 @@ import no.rmz.midibridge.MidibridgeException;
 public class MidiBridgeService extends Application<MidibridgeConfiguration> {
 
     public static void main(String[] args) throws Exception {
-        args = new String[]{"server"};
+        args = new String[]{"server", "midibridge-config.yaml"};
         new MidiBridgeService().run(args);
     }
 
@@ -29,10 +30,13 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
     }
 
     @Override
-    public void run(MidibridgeConfiguration configuration,
-            Environment environment) {
+    public void run(
+            final MidibridgeConfiguration configuration,
+            final Environment environment) {
 
-        // These should be gotten from the argv
+        // These should be gotten from the the config file instead, and perhaps even
+        // do most of the initializations in the initialize method instead of the
+        // run method.
         final String configFile = "fbmidibridge-1746b45f5da7.json";  // arg2
         final String databaseName = "fbmidibridge"; // arg1
         final String pathToListenForEventsIn = "testchannel"; // arg3

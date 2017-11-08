@@ -28,7 +28,6 @@ public final class FbMidiReadingEventGenerator {
             this.midiReceiver = checkNotNull(midiReceiver);
         }
 
-
         @Override
         public void onChildAdded(final DataSnapshot snapshot, final String previousChildName) {
             LOG.info("onChildAdded");
@@ -47,7 +46,7 @@ public final class FbMidiReadingEventGenerator {
                 midiReceiver.put(midiEvent);
 
                 snapshot.getRef().removeValue();
-            } catch (Exception e) {
+            } catch (MidibridgeException e) {
                 LOG.error("Couldn't transform req into FbPurchaseRequest", e);
             }
         }
