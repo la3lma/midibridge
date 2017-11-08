@@ -1,16 +1,16 @@
 package no.rmz.firebasetomidi;
 
-import no.rmz.midibridge.IacDeviceUtilities;
-import no.rmz.midibridge.MidibridgeException;
-import no.rmz.midibridge.MidiReceiver;
-import no.rmz.midibridge.FBMidiReadingEventGenerator;
-import no.rmz.midibridge.BufferedMidiReceiver;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
+import no.rmz.midibridge.BufferedMidiReceiver;
+import no.rmz.midibridge.FBMidiReadingEventGenerator;
+import no.rmz.midibridge.IacDeviceUtilities;
+import no.rmz.midibridge.MidiReceiver;
+import no.rmz.midibridge.MidibridgeException;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 
@@ -40,6 +40,7 @@ public class FBMidiReadingEventGeneratorIT {
             latch.countDown();
             br.put(msg);
         };
+
 
         final FBMidiReadingEventGenerator midiReadingEventSource;
         midiReadingEventSource = new FBMidiReadingEventGenerator(databaseName, configFile, pathToListenForEventsIn, latchingReceiver);
