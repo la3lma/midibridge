@@ -1,4 +1,4 @@
-package no.rmz.firebasetomidi;
+package no.rmz.midibridge;
 
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiSystem;

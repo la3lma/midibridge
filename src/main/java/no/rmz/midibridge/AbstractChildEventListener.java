@@ -1,4 +1,4 @@
-package no.rmz.firebasetomidi;
+package no.rmz.midibridge;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;

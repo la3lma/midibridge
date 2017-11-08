@@ -1,4 +1,4 @@
-package no.rmz.firebasetomidi;
+package no.rmz.midibridge;
 
 
 public final class SequencerException extends Exception {

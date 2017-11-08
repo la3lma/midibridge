@@ -1,8 +1,8 @@
-package no.rmz.firebasetomidi;
+package no.rmz.midibridge;
 
 import javax.sound.midi.ShortMessage;
 
-interface MidiReceiver {
+public interface MidiReceiver {
 
     public void put(ShortMessage msg);
 }

@@ -1,4 +1,4 @@
-package no.rmz.firebasetomidi;
+package no.rmz.midibridge;
 
 import com.google.common.base.Preconditions;
 import java.util.concurrent.BlockingQueue;

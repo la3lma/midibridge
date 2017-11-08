@@ -1,4 +1,4 @@
-package no.rmz.chordguesser.midi;
+package no.rmz.midibridge;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

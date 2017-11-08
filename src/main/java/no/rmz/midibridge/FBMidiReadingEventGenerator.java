@@ -1,4 +1,4 @@
-package no.rmz.firebasetomidi;
+package no.rmz.midibridge;
 
 import com.google.common.base.Preconditions;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -14,7 +14,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.ShortMessage;
-import no.rmz.chordguesser.midi.MidiCmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
