@@ -3,6 +3,7 @@ package no.rmz.midibridge.service;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import java.util.List;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import no.rmz.midibridge.BufferedMidiReceiver;
@@ -10,6 +11,7 @@ import no.rmz.midibridge.FbMidiReadingEventGenerator;
 import no.rmz.midibridge.IacDeviceUtilities;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
+import no.rmz.midibridge.config.FirebaseDestination;
 import no.rmz.midibridge.config.MidibridgeConfiguration;
 
 public class MidiBridgeService extends Application<MidibridgeConfiguration> {
@@ -41,7 +43,14 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         final String configFile = configuration.getFirebaseDatabaseConfig().getConfigFile();
         final String databaseName = configuration.getFirebaseDatabaseConfig().getDatabaseName();
 
-        final String pathToListenForEventsIn = "testchannel";
+        final List<FirebaseDestination> firebaseDestinations = configuration.getFirebaseDestinations();
+        if (firebaseDestinations.size() != 1) {
+            throw new RuntimeException("Not exactly one firebase destination to listen for");
+        }
+        final FirebaseDestination dest = firebaseDestinations.get(0);
+
+        final String pathToListenForEventsIn = dest.getPath();
+
         final String midiDeviceName = "toReason";
 
         final MidiReceiver mr;
