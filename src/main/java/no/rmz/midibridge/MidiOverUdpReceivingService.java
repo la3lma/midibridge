@@ -1,5 +1,6 @@
 package no.rmz.midibridge;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,16 +10,21 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
-/**
- * Discards any incoming data.
- */
-public class UdpServer {
+public final class MidiOverUdpReceivingService {
 
     private final int port;
+    private final MidiReceiver midiReceiver;
 
     public static class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
         private ByteBuf buf;
+        private final MidiReceiver midiReceiver;
+
+        public UdpServerHandler(MidiReceiver midiReceiver) {
+            super();
+            this.midiReceiver = checkNotNull(midiReceiver);
+        }
+
 
         @Override
         public void handlerAdded(ChannelHandlerContext ctx) {
@@ -37,17 +43,7 @@ public class UdpServer {
             final byte[] bytes = new byte[buf.readableBytes()];
             buf.readBytes(bytes);
 
-            final int firstByte = bytes[0] & 0xFF;
-
-            final MidiCmd cmd = MidiCmd.findByMidiCmd(firstByte);
-            if (cmd == null) {
-                return;
-            }
-            if (bytes.length != (cmd.getNoOfArgs() + 1)) {
-                return;
-            }
-
-            System.out.print("Received MIDI cmd: " + cmd.name());
+            midiReceiver.put(bytes);
 
         }
 
@@ -57,8 +53,9 @@ public class UdpServer {
         }
     }
 
-    public UdpServer(int port) {
+    public MidiOverUdpReceivingService(int port, MidiReceiver receiver) {
         this.port = port;
+        this.midiReceiver = receiver;
     }
 
     public void start() throws MidibridgeException {
@@ -67,7 +64,7 @@ public class UdpServer {
             final Bootstrap b = new Bootstrap();
             b.group(group)
                     .channel(NioDatagramChannel.class)
-                    .handler(new UdpServerHandler());
+                    .handler(new UdpServerHandler(this.midiReceiver));
 
             b.bind(port).sync().channel().closeFuture().await();
         } catch (InterruptedException ex) {
@@ -75,11 +72,5 @@ public class UdpServer {
         } finally {
             group.shutdownGracefully();
         }
-    }
-
-    @Deprecated // XXX Nuke after connected to main app.
-    public static void main(String[] args) throws Exception {
-        final UdpServer udpServer = new UdpServer(6565);
-        udpServer.start();
     }
 }

@@ -5,6 +5,7 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import no.rmz.midibridge.FbMidiReadingEventGenerator;
+import no.rmz.midibridge.MidiOverUdpReceivingService;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
 import no.rmz.midibridge.config.MidiRoute;
@@ -57,6 +58,11 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
 
         // Set up routing of incoming HTTP requests to MIDI.
         final MidiEventResource resource = new MidiEventResource(midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver());
+
+        final MidiOverUdpReceivingService udp
+                = new MidiOverUdpReceivingService(6565,
+                        midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver());
+        udp.start();
 
         environment.jersey().register(resource);
     }

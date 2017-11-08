@@ -38,4 +38,34 @@ public interface MidiReceiver {
         }
         throw new MidibridgeException("Could not produce a valid Short MIDI message from input");
     }
+
+    default void put(byte[] bytes) throws InvalidMidiDataException {
+
+        final int firstByte = bytes[0] & 0xFF;
+
+        final MidiCmd cmd = MidiCmd.findByMidiCmd(firstByte);
+
+        if (cmd == null) {
+            return;
+        }
+
+        if (bytes.length != (cmd.getNoOfArgs() + 1)) {
+            return;
+        }
+
+        final int channel = 0; // XXX   Where should we -really- get this from?
+        int arg1 = 0;
+        int arg2 = 0;
+        if (bytes.length > 0) {
+            arg1 = bytes[1] & 0xFF;
+        }
+
+        if (bytes.length > 1) {
+            arg2 = bytes[2] & 0xFF;
+        }
+
+        final ShortMessage myMsg
+                = new ShortMessage(cmd.getCmd(), channel, arg1, arg2);
+        put(myMsg);
+    }
 }
