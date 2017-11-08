@@ -14,6 +14,8 @@ import io.netty.channel.socket.nio.NioDatagramChannel;
  */
 public class UdpServer {
 
+    private final int port;
+
     public static class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
         private ByteBuf buf;
@@ -32,10 +34,21 @@ public class UdpServer {
         @Override
         protected void messageReceived(ChannelHandlerContext chc, DatagramPacket i) throws Exception {
             final ByteBuf buf = i.content();
-            byte[] bytes = new byte[buf.readableBytes()];
+            final byte[] bytes = new byte[buf.readableBytes()];
             buf.readBytes(bytes);
 
-            System.out.println("bytes = " + new String(bytes));
+            final int firstByte = bytes[0] & 0xFF;
+
+            final MidiCmd cmd = MidiCmd.findByMidiCmd(firstByte);
+            if (cmd == null) {
+                return;
+            }
+            if (bytes.length != (cmd.getNoOfArgs() + 1)) {
+                return;
+            }
+
+            System.out.print("Received MIDI cmd: " + cmd.name());
+
         }
 
         @Override
@@ -44,19 +57,29 @@ public class UdpServer {
         }
     }
 
-    private static final int PORT = Integer.parseInt(System.getProperty("port", "6565"));
+    public UdpServer(int port) {
+        this.port = port;
+    }
 
-    public static void main(String[] args) throws Exception {
-        EventLoopGroup group = new NioEventLoopGroup();
+    public void start() throws MidibridgeException {
+        final EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
             b.group(group)
                     .channel(NioDatagramChannel.class)
                     .handler(new UdpServerHandler());
 
-            b.bind(PORT).sync().channel().closeFuture().await();
+            b.bind(port).sync().channel().closeFuture().await();
+        } catch (InterruptedException ex) {
+            throw new MidibridgeException(ex);
         } finally {
             group.shutdownGracefully();
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        final UdpServer udpServer = new UdpServer(6565);
+        udpServer.start();
+
     }
 }
