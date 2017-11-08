@@ -1,5 +1,7 @@
 package no.rmz.midibridge;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public final class FbMidiEventBean {
 
     private String cmd;
@@ -26,18 +28,22 @@ public final class FbMidiEventBean {
         this.strength = strength;
     }
 
+    @JsonProperty
     public String getCmd() {
         return cmd;
     }
 
+    @JsonProperty
     public int getChan() {
         return chan;
     }
 
+    @JsonProperty
     public int getNote() {
         return note;
     }
 
+    @JsonProperty
     // XXX Should be "getVelocity"
     public int getStrength() {
         return strength;
