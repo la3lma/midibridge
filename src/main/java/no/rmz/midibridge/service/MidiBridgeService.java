@@ -1,18 +1,10 @@
 package no.rmz.midibridge.service;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.sound.midi.MidiDevice;
-import javax.sound.midi.MidiUnavailableException;
-import no.rmz.midibridge.BufferedMidiReceiver;
 import no.rmz.midibridge.FbMidiReadingEventGenerator;
-import no.rmz.midibridge.IacDeviceUtilities;
-import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
 import no.rmz.midibridge.config.FirebaseDestination;
 import no.rmz.midibridge.config.MidiDestination;
@@ -36,8 +28,9 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         // nothing to do yet
     }
 
-
     private final MidiDeviceManager midiDeviceManger = new MidiDeviceManager();
+    private final FirebaseEndpointManager firebaseEndpointManager = new FirebaseEndpointManager();
+
 
     @Override
     public void run(
@@ -53,6 +46,8 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
             throw new RuntimeException("Not exactly one firebase destination to listen for");
         }
         final FirebaseDestination dest = firebaseDestinations.get(0);
+        firebaseEndpointManager.addAll(firebaseDestinations);
+
 
         final String pathToListenForEventsIn = dest.getPath();
 
@@ -68,6 +63,13 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
 
         final MidiDeviceManager.Entry entry = midiDeviceManger.getEntryById("toReason");
 
+        final String path;
+        try {
+            path = firebaseEndpointManager.get("testchannel");
+        } catch (MidibridgeException ex) {
+            throw new RuntimeException("We're screwed ", ex);
+        }
+
         final MidiDestination midiDestination = midiDestinations.get(0);
         final String midiDeviceName = midiDestination.getMidiDeviceName();
 
@@ -79,9 +81,8 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
                     = new FbMidiReadingEventGenerator(
                             databaseName,
                             configFile,
-                            pathToListenForEventsIn,
-                            entry.getReceiver());
-
+                            path);
+            midiReadingEventSource.addMidiReceiver(entry.getReceiver());
         } catch (MidibridgeException e) {
             throw new RuntimeException(e);
         }

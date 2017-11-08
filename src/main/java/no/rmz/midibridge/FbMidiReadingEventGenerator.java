@@ -4,7 +4,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -24,11 +23,13 @@ public final class FbMidiReadingEventGenerator {
 
     public final static class FbMidiEventListener extends AbstractChildEventListener {
 
-        private Set<MidiReceiver> midiReceivers;
+        private final Set<MidiReceiver> midiReceivers;
 
-        public FbMidiEventListener(final MidiReceiver midiReceiver) {
-            checkNotNull(midiReceiver);
+        public FbMidiEventListener() {
             this.midiReceivers = new HashSet<>();
+        }
+
+        public void addReceiver(final MidiReceiver midiReceiver) {
             midiReceivers.add(midiReceiver);
         }
 
@@ -57,17 +58,23 @@ public final class FbMidiReadingEventGenerator {
         }
     }
 
+    private final FbMidiEventListener listener;
+
+    public void addMidiReceiver(MidiReceiver receiver) {
+        listener.addReceiver(receiver);
+    }
+
     public FbMidiReadingEventGenerator(
             final String databaseName,
             final String configFile,
-            final String eventpath,
-            final MidiReceiver midiReceiver) throws MidibridgeException {
+            final String eventpath) throws MidibridgeException {
         checkNotNull(configFile);
         checkNotNull(databaseName);
         checkNotNull(eventpath);
 
         this.firebaseDatabase = getDatabaseInstance(configFile, databaseName);
-        final ChildEventListener listener = new FbMidiEventListener(midiReceiver);
+        this.listener = new FbMidiEventListener();
+
         this.midiInputMessages = firebaseDatabase.getReference(eventpath);
         this.midiInputMessages.addChildEventListener(listener);
     }
