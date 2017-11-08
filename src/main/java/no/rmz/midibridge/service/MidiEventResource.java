@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import no.rmz.midibridge.FbMidiEventBean;
 import no.rmz.midibridge.MidiReceiver;
+import no.rmz.midibridge.MidibridgeException;
 
 @Path("/midievent")
 public class MidiEventResource {
@@ -21,7 +22,7 @@ public class MidiEventResource {
 
     @POST
     // @Timed
-    public Response sayHello(final FbMidiEventBean event) {
+    public Response sayHello(final FbMidiEventBean event) throws MidibridgeException {
         this.mr.put(event);
         return Response.noContent().build();
     }
