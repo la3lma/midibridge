@@ -27,7 +27,7 @@ public interface MidiReceiver {
             switch (cmd) {
                 case NOTE_ON:
                 case NOTE_OFF:
-                    myMsg.setMessage(cmd.getCmd(), bean.getChan(), bean.getNote(), bean.getStrength());
+                    myMsg.setMessage(cmd.getCmd(), bean.getChan(), bean.getNote(), bean.getVelocity());
                     return myMsg;
                 default:
                     LOG.info("Received MIDI unknown type of MIDI message: " + bean.toString());
