@@ -43,6 +43,6 @@ public interface MidiReceiver {
             default:
                 LOG.info("Received MIDI unknown type of MIDI message: " + bean.toString());
         }
-        throw new IllegalArgumentException("Could not produce a valid MIDI message from input");
+        throw new IllegalArgumentException("Could not produce a valid Short MIDI message from input");
     }
 }
