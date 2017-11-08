@@ -31,12 +31,11 @@ public class UdpServer {
 
         @Override
         protected void messageReceived(ChannelHandlerContext chc, DatagramPacket i) throws Exception {
-            System.out.println("packet  = " + i);
-            ByteBuf content = i.content();
-            System.out.println("content = " + content);
-            final byte[] array = i.content().array();
-            System.out.println("lenght = " + array.length);
-            System.out.println("content = " + array);
+            final ByteBuf buf = i.content();
+            byte[] bytes = new byte[buf.readableBytes()];
+            buf.readBytes(bytes);
+
+            System.out.println("bytes = " + new String(bytes));
         }
 
         @Override
