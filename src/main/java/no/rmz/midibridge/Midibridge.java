@@ -15,9 +15,9 @@ import org.slf4j.LoggerFactory;
  * from there (injected by a shellcript). Set up a full chain based on this,
  * then start adding compositions etc.
  */
-public final class FirebasePoller {
+public final class Midibridge {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FirebasePoller.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Midibridge.class);
 
     /**
      *
