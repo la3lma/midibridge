@@ -12,13 +12,13 @@ public interface MidiReceiver {
 
     public void put(ShortMessage msg);
 
-    default void put(final FbMidiEventBean midiEvent) {
+    default void put(final FbMidiEventBean midiEvent) throws MidibridgeException {
         checkNotNull(midiEvent);
         final ShortMessage shortMidiMessage = asShortMessage(midiEvent);
         put(shortMidiMessage);
     }
 
-    static ShortMessage asShortMessage(final FbMidiEventBean bean) {
+    static ShortMessage asShortMessage(final FbMidiEventBean bean) throws MidibridgeException {
         checkNotNull(bean);
 
         final MidiCmd cmd = MidiCmd.valueOf(bean.getCmd());
@@ -33,8 +33,8 @@ public interface MidiReceiver {
                     LOG.info("Received MIDI unknown type of MIDI message: " + bean.toString());
             }
         } catch (InvalidMidiDataException ex) {
-            throw new IllegalStateException("couldn't make message", ex);
+            throw new MidibridgeException("couldn't make message", ex);
         }
-        throw new IllegalArgumentException("Could not produce a valid Short MIDI message from input");
+        throw new MidibridgeException("Could not produce a valid Short MIDI message from input");
     }
 }
