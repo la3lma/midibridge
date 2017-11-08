@@ -9,11 +9,9 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
 import no.rmz.midibridge.FbMidiReadingEventGenerator;
+import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
-import no.rmz.midibridge.config.FirebaseDestination;
-import no.rmz.midibridge.config.MidiDestination;
 import no.rmz.midibridge.config.MidiRoute;
 import no.rmz.midibridge.config.MidibridgeConfiguration;
 
@@ -68,13 +66,16 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         }
 
         firebaseEndpointManager = new FirebaseEndpointManager(firebaseDatabase);
+        firebaseEndpointManager.addAll(configuration.getFirebaseDestinations());
+        midiDeviceManger.addAll(configuration.getMidiDestinations());
 
+        /*
         final List<FirebaseDestination> firebaseDestinations = configuration.getFirebaseDestinations();
         if (firebaseDestinations.size() != 1) {
             throw new RuntimeException("Not exactly one firebase destination to listen for");
         }
         final FirebaseDestination dest = firebaseDestinations.get(0);
-        firebaseEndpointManager.addAll(firebaseDestinations);
+        
 
 
         final String pathToListenForEventsIn = dest.getPath();
@@ -95,18 +96,22 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         final String midiDeviceName = midiDestination.getMidiDeviceName();
 
         final List<MidiRoute> midiRoutes = configuration.getMidiRoutes();
+         */
 
         for (final MidiRoute route : configuration.getMidiRoutes()) {
             try {
                 final FbMidiReadingEventGenerator midiReadingEventSource
                         = firebaseEndpointManager.get(route.getSource()).getGenerator();
-                midiReadingEventSource.addMidiReceiver(midiDeviceManger.getEntryById(route.getDestination()).getReceiver());
+                final MidiDeviceManager.Entry entryById = midiDeviceManger.getEntryById(route.getDestination());
+                final MidiReceiver receiver = entryById.getReceiver();
+                midiReadingEventSource.addMidiReceiver(receiver);
             } catch (MidibridgeException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        final MidiEventResource resource = new MidiEventResource(entry.getReceiver());
+        // XXX This is a hack, needs to be amended
+        final MidiEventResource resource = new MidiEventResource(midiDeviceManger.getEntryById("toReason").getReceiver());
 
         environment.jersey().register(resource);
     }

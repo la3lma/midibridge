@@ -63,8 +63,12 @@ public final class MidiDeviceManager {
         }
     }
 
-    public Entry getEntryById(String id) {
+    public Entry getEntryById(final String id) throws MidibridgeException {
         Preconditions.checkNotNull(id);
-        return devices.get(id);
+        final Entry result = devices.get(id);
+        if (result == null) {
+            throw new MidibridgeException("Unknown MIDI endpoint: " + id);
+        }
+        return result;
     }
 }
