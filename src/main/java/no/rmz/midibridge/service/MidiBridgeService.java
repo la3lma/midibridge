@@ -96,12 +96,14 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
 
         final List<MidiRoute> midiRoutes = configuration.getMidiRoutes();
 
-        try {
-            final FbMidiReadingEventGenerator midiReadingEventSource
-                    = firebaseEndpointManager.get("testchannel").getGenerator();
-            midiReadingEventSource.addMidiReceiver(entry.getReceiver());
-        } catch (MidibridgeException e) {
-            throw new RuntimeException(e);
+        for (final MidiRoute route : configuration.getMidiRoutes()) {
+            try {
+                final FbMidiReadingEventGenerator midiReadingEventSource
+                        = firebaseEndpointManager.get(route.getSource()).getGenerator();
+                midiReadingEventSource.addMidiReceiver(midiDeviceManger.getEntryById(route.getDestination()).getReceiver());
+            } catch (MidibridgeException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         final MidiEventResource resource = new MidiEventResource(entry.getReceiver());
