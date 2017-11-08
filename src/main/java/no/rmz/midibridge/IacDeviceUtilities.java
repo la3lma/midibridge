@@ -15,9 +15,9 @@ public final class IacDeviceUtilities {
      * Get a midi device ready to receive input.
      * @param devicename Name of midi device.
      * @return A MidiDevice instance, opened, ready to receive input.
-     * @throws SequencerException if midi device is unavailable or has no receivers.
+     * @throws MidibridgeException if midi device is unavailable or has no receivers.
      */
-    public static MidiDevice getMidiReceivingDevice(final String devicename) throws SequencerException {
+    public static MidiDevice getMidiReceivingDevice(final String devicename) throws MidibridgeException {
         final MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
         for (final MidiDevice.Info info : infos) {
             try {
@@ -30,10 +30,10 @@ public final class IacDeviceUtilities {
                     }
                 }
             } catch (MidiUnavailableException ex) {
-                throw new SequencerException("Midi unavailable for  : " + devicename, ex);
+                throw new MidibridgeException("Midi unavailable for  : " + devicename, ex);
             }
         }
-        throw new SequencerException("Couldn't find midi device : " + devicename);
+        throw new MidibridgeException("Couldn't find midi device : " + devicename);
     }
     /**
      * Utility class, no creator.

@@ -1,7 +1,7 @@
 package no.rmz.firebasetomidi;
 
 import no.rmz.midibridge.IacDeviceUtilities;
-import no.rmz.midibridge.SequencerException;
+import no.rmz.midibridge.MidibridgeException;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.FBMidiReadingEventGenerator;
 import no.rmz.midibridge.BufferedMidiReceiver;
@@ -20,7 +20,7 @@ public class FBMidiReadingEventGeneratorIT {
     }
 
     @Test
-    public void testSomeMethod() throws SequencerException, InterruptedException, MidiUnavailableException {
+    public void testSomeMethod() throws MidibridgeException, InterruptedException, MidiUnavailableException {
 
         // These should be gotten from the argv
         final String configFile = "fbmidibridge-1746b45f5da7.json";  // arg2

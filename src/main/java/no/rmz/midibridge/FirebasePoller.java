@@ -34,12 +34,12 @@ public final class FirebasePoller {
      * FBMidiReadingEventGenerator
      *
      * @param argv
-     * @throws SequencerException
+     * @throws MidibridgeException
      * @throws IOException
      * @throws InterruptedException
      * @throws javax.sound.midi.MidiUnavailableException
      */
-    public final static void main(final String[] argv) throws SequencerException,
+    public final static void main(final String[] argv) throws MidibridgeException,
             IOException, InterruptedException, MidiUnavailableException {
 
         LOG.info("Getting started");
