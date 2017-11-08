@@ -37,11 +37,9 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         // These should be gotten from the the config file instead, and perhaps even
         // do most of the initializations in the initialize method instead of the
         // run method.
-        final String configFile = "fbmidibridge-1746b45f5da7.json";
-        final String databaseName = "fbmidibridge";
 
-        // final String configFile = configuration.getFirebaseDatabaseConfig().getConfigFile();
-        // final String databaseName = configuration.getFirebaseDatabaseConfig().getDatabaseName();
+        final String configFile = configuration.getFirebaseDatabaseConfig().getConfigFile();
+        final String databaseName = configuration.getFirebaseDatabaseConfig().getDatabaseName();
 
         final String pathToListenForEventsIn = "testchannel";
         final String midiDeviceName = "toReason";
