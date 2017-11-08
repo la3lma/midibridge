@@ -69,35 +69,6 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         firebaseEndpointManager.addAll(configuration.getFirebaseDestinations());
         midiDeviceManger.addAll(configuration.getMidiDestinations());
 
-        /*
-        final List<FirebaseDestination> firebaseDestinations = configuration.getFirebaseDestinations();
-        if (firebaseDestinations.size() != 1) {
-            throw new RuntimeException("Not exactly one firebase destination to listen for");
-        }
-        final FirebaseDestination dest = firebaseDestinations.get(0);
-        
-
-
-        final String pathToListenForEventsIn = dest.getPath();
-
-        final List<MidiDestination> midiDestinations = configuration.getMidiDestinations();
-        if (midiDestinations.size() != 1) {
-            throw new RuntimeException("Not exactly one midi destination to send to");
-        }
-        try {
-            midiDeviceManger.addAll(midiDestinations);
-        } catch (MidibridgeException ex) {
-            throw new RuntimeException("We're screwed", ex);
-        }
-
-        final MidiDeviceManager.Entry entry = midiDeviceManger.getEntryById("toReason");
-
-        final MidiDestination midiDestination = midiDestinations.get(0);
-        final String midiDeviceName = midiDestination.getMidiDeviceName();
-
-        final List<MidiRoute> midiRoutes = configuration.getMidiRoutes();
-         */
-
         for (final MidiRoute route : configuration.getMidiRoutes()) {
             try {
                 final FbMidiReadingEventGenerator midiReadingEventSource
