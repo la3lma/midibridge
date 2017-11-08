@@ -15,6 +15,8 @@ public final class MidibridgeConfiguration extends Configuration {
 
     private List<MidiRoute> midiRoutes;
 
+    private String httpMidiRoute;
+
     public FirebaseDatabaseConfig getFirebaseDatabaseConfig() {
         return firebaseDatabaseConfig;
     }
@@ -49,9 +51,17 @@ public final class MidibridgeConfiguration extends Configuration {
         this.firebaseDestinations = firebaseDestinations;
     }
 
-    @Override
-    public String toString() {
-        return "MidibridgeConfiguration{" + "firebaseDatabaseConfig=" + firebaseDatabaseConfig + ", firebaseDestinations=" + firebaseDestinations + ", midiDestinations=" + midiDestinations + ", midiRoutes=" + midiRoutes + '}';
+    public String getHttpMidiRoute() {
+        return httpMidiRoute;
     }
 
+    @JsonProperty
+    public void setHttpMidiRoute(String httpMidiRoute) {
+        this.httpMidiRoute = httpMidiRoute;
+    }
+
+    @Override
+    public String toString() {
+        return "MidibridgeConfiguration{" + "firebaseDatabaseConfig=" + firebaseDatabaseConfig + ", firebaseDestinations=" + firebaseDestinations + ", midiDestinations=" + midiDestinations + ", midiRoutes=" + midiRoutes + ", httpMidiRoute=" + httpMidiRoute + '}';
+    }
 }

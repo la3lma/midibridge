@@ -21,5 +21,7 @@ midiRoutes:
     - source: testchannel
       destination: toReason
 
+httpMidiRoute:  toReason
+
 #  XXX So far not setting up routing for web input.  Need to look into that a bit.
 #      probably use the same framework as for firebase/midi.

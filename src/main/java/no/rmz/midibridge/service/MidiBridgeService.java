@@ -1,14 +1,9 @@
 package no.rmz.midibridge.service;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import java.io.FileInputStream;
-import java.io.IOException;
 import no.rmz.midibridge.FbMidiReadingEventGenerator;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
@@ -35,40 +30,19 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
     private final MidiDeviceManager midiDeviceManger = new MidiDeviceManager();
     private FirebaseEndpointManager firebaseEndpointManager;
 
-    private static FirebaseDatabase getDatabaseInstance(final String configFile, final String databaseName) throws MidibridgeException {
-        try (final FileInputStream serviceAccount = new FileInputStream(configFile)) {
-            final FirebaseOptions options = new FirebaseOptions.Builder().setCredential(FirebaseCredentials.fromCertificate(serviceAccount)).setDatabaseUrl("https://" + databaseName + ".firebaseio.com/").build();
-            try {
-                FirebaseApp.getInstance();
-            } catch (Exception e) {
-                FirebaseApp.initializeApp(options);
-            }
-            return FirebaseDatabase.getInstance();
-        } catch (IOException ex) {
-            throw new MidibridgeException(ex);
-        }
-    }
 
     @Override
     public void run(
             final MidibridgeConfiguration configuration,
             final Environment environment) throws MidibridgeException {
 
-
-        final String configFile = configuration.getFirebaseDatabaseConfig().getConfigFile();
-        final String databaseName = configuration.getFirebaseDatabaseConfig().getDatabaseName();
-
-        final FirebaseDatabase firebaseDatabase;
-        try {
-            firebaseDatabase = getDatabaseInstance(configFile, databaseName);
-        } catch (MidibridgeException ex) {
-            throw new RuntimeException("We're screwed");
-        }
+        final FirebaseDatabase firebaseDatabase = configuration.getFirebaseDatabaseConfig().getFirebaseDatabase();
 
         firebaseEndpointManager = new FirebaseEndpointManager(firebaseDatabase);
         firebaseEndpointManager.addAll(configuration.getFirebaseDestinations());
         midiDeviceManger.addAll(configuration.getMidiDestinations());
 
+        // Set up the firbase to MIDI routes.
         for (final MidiRoute route : configuration.getMidiRoutes()) {
             try {
                 final FbMidiReadingEventGenerator midiReadingEventSource
@@ -81,8 +55,8 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
             }
         }
 
-        // XXX This is a hack, needs to be amended
-        final MidiEventResource resource = new MidiEventResource(midiDeviceManger.getEntryById("toReason").getReceiver());
+        // Set up routing of incoming HTTP requests to MIDI.
+        final MidiEventResource resource = new MidiEventResource(midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver());
 
         environment.jersey().register(resource);
     }
