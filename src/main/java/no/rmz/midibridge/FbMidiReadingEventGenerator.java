@@ -10,6 +10,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,10 +24,12 @@ public final class FbMidiReadingEventGenerator {
 
     public final static class FbMidiEventListener extends AbstractChildEventListener {
 
-        private final MidiReceiver midiReceiver;
+        private Set<MidiReceiver> midiReceivers;
 
-        public FbMidiEventListener(MidiReceiver midiReceiver) {
-            this.midiReceiver = checkNotNull(midiReceiver);
+        public FbMidiEventListener(final MidiReceiver midiReceiver) {
+            checkNotNull(midiReceiver);
+            this.midiReceivers = new HashSet<>();
+            midiReceivers.add(midiReceiver);
         }
 
         @Override
@@ -42,7 +46,9 @@ public final class FbMidiReadingEventGenerator {
                 final FbMidiEventBean midiEvent = snapshot.getValue(FbMidiEventBean.class);
                 LOG.info("just read midi event bean  from Firebase " + midiEvent);
 
-                midiReceiver.put(midiEvent);
+                for (MidiReceiver midiReceiver : midiReceivers) {
+                    midiReceiver.put(midiEvent);
+                }
 
                 snapshot.getRef().removeValue();
             } catch (MidibridgeException e) {

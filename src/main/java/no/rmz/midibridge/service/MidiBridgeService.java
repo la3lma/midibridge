@@ -36,65 +36,6 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         // nothing to do yet
     }
 
-    public final static class MidiDeviceManager {
-
-        public final static class Entry {
-
-            private final String id;
-            private final MidiDestination dest;
-            private final MidiReceiver receiver;
-
-            public Entry(final MidiDestination dest) throws MidibridgeException {
-                this.dest = checkNotNull(dest);
-                this.id = dest.getId();
-
-                final MidiDevice midiDevice
-                        = IacDeviceUtilities.getMidiReceivingDevice(dest.getMidiDeviceName());
-                try {
-                    this.receiver = new BufferedMidiReceiver(midiDevice.getReceiver());
-                } catch (MidiUnavailableException ex) {
-                    throw new MidibridgeException(ex);
-                }
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public MidiDestination getDest() {
-                return dest;
-            }
-
-            public MidiReceiver getReceiver() {
-                return receiver;
-            }
-
-        }
-
-        private final Map<String, Entry> devices;
-
-        public MidiDeviceManager() {
-            this.devices = new HashMap<>();
-        }
-
-        public void addDestination(final MidiDestination dest) throws MidibridgeException {
-            checkNotNull(dest);
-            final Entry entry = new Entry(dest);
-            devices.put(entry.getId(), entry);
-        }
-
-        public void addAll(final List<MidiDestination> midiDestinations) throws MidibridgeException {
-            checkNotNull(midiDestinations);
-            for (MidiDestination d : midiDestinations) {
-                addDestination(d);
-            }
-        }
-
-        public Entry getEntryById(String id) {
-            checkNotNull(id);
-            return devices.get(id);
-        }
-    }
 
     private final MidiDeviceManager midiDeviceManger = new MidiDeviceManager();
 
@@ -125,8 +66,7 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
             throw new RuntimeException("We're screwed", ex);
         }
 
-        MidiDeviceManager.Entry entry = midiDeviceManger.getEntryById("toReason");
-
+        final MidiDeviceManager.Entry entry = midiDeviceManger.getEntryById("toReason");
 
         final MidiDestination midiDestination = midiDestinations.get(0);
         final String midiDeviceName = midiDestination.getMidiDeviceName();
@@ -134,7 +74,7 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         final List<MidiRoute> midiRoutes = configuration.getMidiRoutes();
 
         try {
-            // XXX Tie this into the lifecycle of dropwizard objects.
+            // XXX Make this tie this into the lifecycle of dropwizard objects.
             final FbMidiReadingEventGenerator midiReadingEventSource
                     = new FbMidiReadingEventGenerator(
                             databaseName,
