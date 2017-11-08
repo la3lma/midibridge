@@ -77,6 +77,9 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
 
         try {
             // XXX Make this tie this into the lifecycle of dropwizard objects.
+
+            // XXX Make one of these per (path), then just do the "add midi receiver" while
+            //     traversing the routes.
             final FbMidiReadingEventGenerator midiReadingEventSource
                     = new FbMidiReadingEventGenerator(
                             databaseName,
