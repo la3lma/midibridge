@@ -37,9 +37,6 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
             final MidibridgeConfiguration configuration,
             final Environment environment) {
 
-        // These should be gotten from the the config file instead, and perhaps even
-        // do most of the initializations in the initialize method instead of the
-        // run method.
 
         final String configFile = configuration.getFirebaseDatabaseConfig().getConfigFile();
         final String databaseName = configuration.getFirebaseDatabaseConfig().getDatabaseName();
