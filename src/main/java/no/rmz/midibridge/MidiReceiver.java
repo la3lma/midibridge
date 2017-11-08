@@ -39,6 +39,8 @@ public interface MidiReceiver {
         throw new MidibridgeException("Could not produce a valid Short MIDI message from input");
     }
 
+    // XXX Extend to let the first byte be the channel byte, must be in the range 1-16 (or 01
+    //     -15?)
     default void put(byte[] bytes) throws InvalidMidiDataException {
 
         final int firstByte = bytes[0] & 0xFF;
@@ -53,7 +55,7 @@ public interface MidiReceiver {
             return;
         }
 
-        final int channel = 0; // XXX   Where should we -really- get this from?
+        final int channel = 0; // XXX   Where should we -really- get this from?   One more byte
         int arg1 = 0;
         int arg2 = 0;
         if (bytes.length > 0) {

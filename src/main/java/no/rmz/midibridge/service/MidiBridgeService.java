@@ -56,6 +56,8 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
             }
         }
 
+        // XXX The routing is still a bit of a mess.  Needs to be refactored for proper workitude.
+
         // Set up routing of incoming HTTP requests to MIDI.
         final MidiEventResource resource = new MidiEventResource(midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver());
 
