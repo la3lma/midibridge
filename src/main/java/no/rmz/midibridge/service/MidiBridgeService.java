@@ -12,6 +12,7 @@ import no.rmz.midibridge.IacDeviceUtilities;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
 import no.rmz.midibridge.config.FirebaseDestination;
+import no.rmz.midibridge.config.MidiDestination;
 import no.rmz.midibridge.config.MidibridgeConfiguration;
 
 public class MidiBridgeService extends Application<MidibridgeConfiguration> {
@@ -51,7 +52,12 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
 
         final String pathToListenForEventsIn = dest.getPath();
 
-        final String midiDeviceName = "toReason";
+        final List<MidiDestination> midiDestinations = configuration.getMidiDestinations();
+        if (midiDestinations.size() != 1) {
+            throw new RuntimeException("Not exactly one midi destination to send to");
+        }
+        final MidiDestination midiDestination = midiDestinations.get(0);
+        final String midiDeviceName = midiDestination.getMidiDeviceName();
 
         final MidiReceiver mr;
         try {
