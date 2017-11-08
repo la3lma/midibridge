@@ -3,8 +3,6 @@ package no.rmz.midibridge.service;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiUnavailableException;
 import no.rmz.midibridge.BufferedMidiReceiver;
@@ -33,7 +31,6 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
     @Override
     public void run(MidibridgeConfiguration configuration,
             Environment environment) {
-        final HelloWorldResource resource = new HelloWorldResource();
 
         // These should be gotten from the argv
         final String configFile = "fbmidibridge-1746b45f5da7.json";  // arg2
@@ -41,19 +38,22 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         final String pathToListenForEventsIn = "testchannel"; // arg3
         final String midiDeviceName = "toReason"; // arg4
 
+        final MidiReceiver mr;
         try {
             final MidiDevice midiDevice
                     = IacDeviceUtilities.getMidiReceivingDevice(midiDeviceName);
-            final MidiReceiver br = new BufferedMidiReceiver(midiDevice.getReceiver());
+            mr = new BufferedMidiReceiver(midiDevice.getReceiver());
 
+            // XXX Tie this into the lifecycle of dropwizard objects.
             FBMidiReadingEventGenerator midiReadingEventSource
-                    = new FBMidiReadingEventGenerator(databaseName, configFile, pathToListenForEventsIn, br);
+                    = new FBMidiReadingEventGenerator(databaseName, configFile, pathToListenForEventsIn, mr);
 
-        } catch (MidibridgeException e) {
-            // mm.
-        } catch (MidiUnavailableException ex) {
-            Logger.getLogger(MidiBridgeService.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (MidibridgeException | MidiUnavailableException e) {
+            throw new RuntimeException(e);
         }
+
+        final MidiEventResource resource = new MidiEventResource(mr);
+
         environment.jersey().register(resource);
     }
 }
