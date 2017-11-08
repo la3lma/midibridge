@@ -40,4 +40,10 @@ public final class BufferedMidiReceiver implements MidiReceiver {
     public void put(final ShortMessage msg) {
         queue.add(msg);
     }
+
+    @Override
+    public String toString() {
+        return "BufferedMidiReceiver{" + "recv=" + recv + ", queue=" + queue + '}';
+    }
+
 }

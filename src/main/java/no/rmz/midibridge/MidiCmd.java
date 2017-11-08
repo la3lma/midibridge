@@ -6,7 +6,7 @@ public enum MidiCmd {
     NOTE_ON(ShortMessage.NOTE_ON),
     NOTE_OFF(ShortMessage.NOTE_OFF);
 
-    private int cmd;
+    private final int cmd;
 
     public int getCmd() {
         return cmd;

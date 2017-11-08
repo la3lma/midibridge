@@ -30,7 +30,6 @@ public final class FbMidiReadingEventGenerator {
 
         @Override
         public void onChildAdded(final DataSnapshot snapshot, final String previousChildName) {
-            LOG.info("onChildAdded");
             if (snapshot == null) {
                 LOG.error("dataSnapshot can't be null");
                 return;
