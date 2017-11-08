@@ -6,10 +6,8 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import java.io.FileInputStream;
 import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
@@ -72,31 +70,11 @@ public final class FBMidiReadingEventGenerator {
                 FirebaseApp.initializeApp(options);
             }
             this.firebaseDatabase = FirebaseDatabase.getInstance();
-            // (un)comment next line to turn on/of extended debugging
-            // from firebase.
-            // this.firebaseDatabase.setLogLevel(com.google.firebase.database.Logger.Level.DEBUG);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-        // XXX Read this, then fix something that reports connectivity status through the
-        //     health mechanism.
-        // https://www.firebase.com/docs/web/guide/offline-capabilities.html#section-connection-state
-        // this.firebaseDatabase.getReference("/.info/connected").addValueEventListener()
+
         this.midiInputMessages = firebaseDatabase.getReference(eventpath);
-
-        // XXX This value event thing is probably not something we need.
-        final ValueEventListener productCatalogValueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                LOG.info("onDataChange");
-                // XXX TBD
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                LOG.info("onDataChange");
-            }
-        };
 
         this.midiInputMessages.addChildEventListener(new AbstractChildEventListener() {
             @Override
@@ -119,26 +97,11 @@ public final class FBMidiReadingEventGenerator {
                     LOG.info("Short message =  " + shortMidiMessage);
                     midiReceiver.put(shortMidiMessage);
 
-                    // XXX Missing
-                    //  o Send event to midi (in separate thread etc)
-                    //  o Get rid message that was just read from Firebase.
+                    snapshot.getRef().removeValue();
                 } catch (Exception e) {
                     LOG.error("Couldn't transform req into FbPurchaseRequest", e);
                 }
             }
         });
     }
-
-    // (un)comment next line to turn on/of extended debugging
-    // from firebase.
-    // this.firebaseDatabase.setLogLevel(com.google.firebase.database.Logger.Level.DEBUG);
-    // XXX Read this, then fix something that reports connectivity status through the
-    //     health mechanism.
-    // https://www.firebase.com/docs/web/guide/offline-capabilities.html#section-connection-state
-    // this.firebaseDatabase.getReference("/.info/connected").addValueEventListener()
-    // XXX TBD
-    // XXX Send the MIDI event to something running in some other thread.
-    // The methods below are added just to
-    // fulfill the interface contract, they don't actually
-    // do anything.
 }
