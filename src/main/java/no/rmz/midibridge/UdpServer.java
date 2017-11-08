@@ -64,7 +64,7 @@ public class UdpServer {
     public void start() throws MidibridgeException {
         final EventLoopGroup group = new NioEventLoopGroup();
         try {
-            Bootstrap b = new Bootstrap();
+            final Bootstrap b = new Bootstrap();
             b.group(group)
                     .channel(NioDatagramChannel.class)
                     .handler(new UdpServerHandler());
@@ -77,9 +77,9 @@ public class UdpServer {
         }
     }
 
+    @Deprecated // XXX Nuke after connected to main app.
     public static void main(String[] args) throws Exception {
         final UdpServer udpServer = new UdpServer(6565);
         udpServer.start();
-
     }
 }
