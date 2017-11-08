@@ -78,7 +78,7 @@ public final class FBMidiReadingEventGenerator {
 
         this.midiInputMessages.addChildEventListener(new AbstractChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+            public void onChildAdded(final DataSnapshot snapshot, final String previousChildName) {
                 LOG.info("onChildAdded");
                 if (snapshot == null) {
                     LOG.error("dataSnapshot can't be null");
@@ -90,11 +90,10 @@ public final class FBMidiReadingEventGenerator {
                 }
                 try {
                     final FbMidiEventBean midiEvent = snapshot.getValue(FbMidiEventBean.class);
-                    LOG.info("just read midi event bean " + midiEvent);
+                    LOG.info("just read midi event bean  from Firebase " + midiEvent);
 
                     final ShortMessage shortMidiMessage = asShortMessage(midiEvent);
 
-                    LOG.info("Short message =  " + shortMidiMessage);
                     midiReceiver.put(shortMidiMessage);
 
                     snapshot.getRef().removeValue();
