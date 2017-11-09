@@ -6,8 +6,8 @@
 # 0x90	Note-on	        2	        key	velocity
 
 # Key on
-echo -n -e '\x01\x90\x44\x45' | nc -w 1 -u localhost 6565
+echo -n -e '\x00\x90\x44\x45' | nc -w 1 -u localhost 6565
 sleep 2
 
 # Key off
-echo -n -e '\x01\x80\x44\x45' | nc -w 1 -u localhost 6565
+echo -n -e '\x00\x80\x44\x45' | nc -w 1 -u localhost 6565
