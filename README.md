@@ -1,4 +1,4 @@
-Firebase/REST/UDP interface to MIDI
+Firebase/REST/UDP  to MIDI bridge
 ========
 
 
@@ -6,7 +6,7 @@ What it does
 ----
 Accept incoming MIDI events either through Firebase, REST POST
 or UDP packets, and send them to some MIDI destination as seen from
-the server that runs the bridge.
+the server that runs the bridge.  It's tested on a mac laptop, and nowhere else.
 
 How it's done
 ----
@@ -74,3 +74,11 @@ Todo
   * Read configs via configfile, as you do
   * Make the MIDI-sending queues and the firease-reader into services with
     normal dropwizard lifecycle
+
+* Add more of the MIDI protocol to the bridge.  For now it only
+  works properly for key on / key off events.  There are many more
+  possible events in MIDI, and it's relatively straightforward (but
+  still time consuming) to add more.
+
+* Check out how to modify the sounds of loop running in a step-sequencer
+  by twiddling knobs on the synth making the sounds.
