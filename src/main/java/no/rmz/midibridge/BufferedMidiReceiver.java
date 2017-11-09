@@ -18,15 +18,23 @@ public final class BufferedMidiReceiver implements MidiReceiver {
     public BufferedMidiReceiver(final Receiver recv) {
         this.recv = Preconditions.checkNotNull(recv);
         this.queue = new LinkedBlockingQueue<>(100000);
-        new Thread(() -> {
-            while (true) {
-                try {
-                    sendOldest();
-                } catch (InterruptedException e) {
-                    LOG.error("Interrupted sending of MIDI message", e);
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    safelySendOldest();
                 }
             }
-        }).start();
+        };
+        new Thread(runnable).start();
+    }
+
+    private void safelySendOldest() {
+        try {
+            sendOldest();
+        } catch (InterruptedException e) {
+            LOG.error("Interrupted sending of MIDI message", e);
+        }
     }
 
     private void sendOldest() throws InterruptedException {
@@ -45,5 +53,4 @@ public final class BufferedMidiReceiver implements MidiReceiver {
     public String toString() {
         return "BufferedMidiReceiver{" + "recv=" + recv + ", queue=" + queue + '}';
     }
-
 }
