@@ -49,9 +49,9 @@ Then you just use the power of the command line thingy
 To send MIDI using UDP, you can use a combination of netcat and echo to send MIDI messages.  The first byte transmitted is the channel (x00 means channel 1).
 
      # https://ccrma.stanford.edu/~craig/articles/linuxMIDI/misc/essenMIDI.html
-     # Command	Meaning	# parameters	param 1	param 2
-     # 0x80	Note-off	2	        key	velocity
-     # 0x90	Note-on	        2	        key	velocity
+     # Command  Meaning # parameters    param 1 param 2
+     # 0x80     Note-off        2               key     velocity
+     # 0x90     Note-on         2               key     velocity
 
      # Key on
      echo -n -e '\x00\x90\x44\x45' | nc -w 1 -u localhost 6565
@@ -82,8 +82,8 @@ To send UDP encoded MIDI from arduino with wifi, this code can be used as a star
        Serial.printf("Connecting to %s ", ssid);
        WiFi.begin(ssid, password);
        while (WiFi.status() != WL_CONNECTED)  {
-	 delay(500);
-	 Serial.print(".");
+         delay(500);
+         Serial.print(".");
        }
        Serial.println(" connected");
        Serial.printf("Connected as  %s\n", WiFi.localIP().toString().c_str());
