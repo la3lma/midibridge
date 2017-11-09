@@ -83,3 +83,5 @@ Todo
 
 * Check out how to modify the sounds of loop running in a step-sequencer
   by twiddling knobs on the synth making the sounds.
+
+* https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers
