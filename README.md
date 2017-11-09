@@ -1,6 +1,7 @@
 Firebase/REST/UDP  to MIDI bridge
 ========
 
+[Codebeat](https://codebeat.co/projects/github-com-la3lma-midibridge-master)
 
 What it does
 ----
