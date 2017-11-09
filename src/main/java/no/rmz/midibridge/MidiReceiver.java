@@ -39,31 +39,39 @@ public interface MidiReceiver {
         throw new MidibridgeException("Could not produce a valid Short MIDI message from input");
     }
 
-    // XXX Extend to let the first byte be the channel byte, must be in the range 1-16 (or 01
-    //     -15?)
     default void put(byte[] bytes) throws InvalidMidiDataException {
 
-        final int firstByte = bytes[0] & 0xFF;
+        if (bytes.length < 2) {
+            return;
+        }
 
-        final MidiCmd cmd = MidiCmd.findByMidiCmd(firstByte);
+        final int midiChannelByte = bytes[0] & 0xFF;
+        final int midiCommandByte = bytes[1] & 0xFF;
+
+        if (midiChannelByte > 16) {  // XXX Or >=?
+            return;
+        }
+
+        final MidiCmd cmd = MidiCmd.findByMidiCmd(midiCommandByte);
 
         if (cmd == null) {
             return;
         }
 
-        if (bytes.length != (cmd.getNoOfArgs() + 1)) {
+        if (bytes.length != (cmd.getNoOfArgs() + 2)) {
             return;
         }
 
-        final int channel = 0; // XXX   Where should we -really- get this from?   One more byte
+        final int channel = midiChannelByte;
+
         int arg1 = 0;
         int arg2 = 0;
         if (bytes.length > 0) {
-            arg1 = bytes[1] & 0xFF;
+            arg1 = bytes[2] & 0xFF;
         }
 
         if (bytes.length > 1) {
-            arg2 = bytes[2] & 0xFF;
+            arg2 = bytes[3] & 0xFF;
         }
 
         final ShortMessage myMsg
