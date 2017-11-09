@@ -10,6 +10,21 @@ import javax.sound.midi.MidiUnavailableException;
  */
 public final class IacDeviceUtilities {
 
+    private static MidiDevice getMatchingDevice(final String devicename, MidiDevice.Info info) throws MidibridgeException {
+        try {
+            final MidiDevice device = MidiSystem.getMidiDevice(info);
+            if (device.getMaxReceivers() != 0) {
+                final String deviceName = device.getDeviceInfo().getName();
+                if (devicename.equals(deviceName)) {
+                    device.open();
+                    return device;
+                }
+            }
+        } catch (MidiUnavailableException ex) {
+            throw new MidibridgeException("Midi unavailable for  : " + devicename, ex);
+        }
+        return null;
+    }
 
     /**
      * Get a midi device ready to receive input.
@@ -20,21 +35,15 @@ public final class IacDeviceUtilities {
     public static MidiDevice getMidiReceivingDevice(final String devicename) throws MidibridgeException {
         final MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
         for (final MidiDevice.Info info : infos) {
-            try {
-                final MidiDevice device = MidiSystem.getMidiDevice(info);
-                if (device.getMaxReceivers() != 0) {
-                    final String deviceName = device.getDeviceInfo().getName();
-                    if (devicename.equals(deviceName)) {
-                        device.open();
-                        return device;
-                    }
-                }
-            } catch (MidiUnavailableException ex) {
-                throw new MidibridgeException("Midi unavailable for  : " + devicename, ex);
+            final MidiDevice device;
+            device = getMatchingDevice(devicename, info);
+            if (device != null) {
+                return device;
             }
         }
         throw new MidibridgeException("Couldn't find midi device : " + devicename);
     }
+
     /**
      * Utility class, no creator.
      */
