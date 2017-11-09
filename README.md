@@ -39,7 +39,7 @@ Then you just use the power of the command line thingy
      firebase --project fbMIDIbridge  --data '{"chan": 0, "cmd": "NOTE_ON", "note": 60, "velocity": 127 }' database:push /testchannel
      firebase --project fbMIDIbridge  --data '{"chan": 0, "cmd": "NOTE_ON", "note": 127, "velocity": 127 }' database:push /testchannel
 
-... you could of course also use the firebase intrefaces for javascript, android, iphone  etc.   Look at the firebase documentation for details.
+... you could of course also use the firebase interfaces for javascript, android, iphone  etc.   Look at the firebase documentation for details.
 
 
 ### To send MIDI using UDP
