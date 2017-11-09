@@ -16,6 +16,10 @@ firebaseDestinations:
     - id: testchannel
       path: testchannel
 
+# udpDestinations:
+#     - id:   udpMidi
+#       port: 6565
+
 
 midiRoutes:
     - source: testchannel
