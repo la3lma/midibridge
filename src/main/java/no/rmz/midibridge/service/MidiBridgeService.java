@@ -59,11 +59,12 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         // XXX The routing is still a bit of a mess.  Needs to be refactored for proper workitude.
 
         // Set up routing of incoming HTTP requests to MIDI.
-        final MidiEventResource resource = new MidiEventResource(midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver());
+        final MidiReceiver defaultReceiver = midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver();
+        final MidiEventResource resource = new MidiEventResource(defaultReceiver);
 
         final MidiOverUdpReceivingService udp
-                = new MidiOverUdpReceivingService(6565,
-                        midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver());
+                = new MidiOverUdpReceivingService(6565);
+        udp.addMidiReceiver(defaultReceiver);
         udp.start();
 
         environment.jersey().register(resource);

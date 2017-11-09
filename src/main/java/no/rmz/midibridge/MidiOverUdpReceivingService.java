@@ -9,22 +9,35 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+import java.util.HashSet;
+import java.util.Set;
+import javax.sound.midi.InvalidMidiDataException;
 
 public final class MidiOverUdpReceivingService {
 
     private final int port;
-    private final MidiReceiver midiReceiver;
+
 
     public static class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
         private ByteBuf buf;
-        private final MidiReceiver midiReceiver;
 
-        public UdpServerHandler(MidiReceiver midiReceiver) {
+
+        public UdpServerHandler() {
             super();
-            this.midiReceiver = checkNotNull(midiReceiver);
         }
 
+        private final Set<MidiReceiver> midiReceivers = new HashSet<>();
+
+        private void sendBytesToMidiReceivers(final byte[] bytes) throws InvalidMidiDataException {
+            for (final MidiReceiver r : midiReceivers) {
+                r.put(bytes);
+            }
+        }
+
+        public void addMidiReceiver(MidiReceiver receiver) {
+            midiReceivers.add(receiver);
+        }
 
         @Override
         public void handlerAdded(ChannelHandlerContext ctx) {
@@ -43,8 +56,7 @@ public final class MidiOverUdpReceivingService {
             final byte[] bytes = new byte[buf.readableBytes()];
             buf.readBytes(bytes);
 
-            midiReceiver.put(bytes);
-
+            sendBytesToMidiReceivers(bytes);
         }
 
         @Override
@@ -53,9 +65,15 @@ public final class MidiOverUdpReceivingService {
         }
     }
 
-    public MidiOverUdpReceivingService(int port, MidiReceiver receiver) {
+    private final UdpServerHandler handler = new UdpServerHandler();
+
+    public void addMidiReceiver(final MidiReceiver receiver) {
+        checkNotNull(receiver);
+        handler.addMidiReceiver(receiver);
+    }
+
+    public MidiOverUdpReceivingService(int port) {
         this.port = port;
-        this.midiReceiver = receiver;
     }
 
     public void start() throws MidibridgeException {
@@ -64,7 +82,7 @@ public final class MidiOverUdpReceivingService {
             final Bootstrap b = new Bootstrap();
             b.group(group)
                     .channel(NioDatagramChannel.class)
-                    .handler(new UdpServerHandler(this.midiReceiver));
+                    .handler(handler);
 
             b.bind(port).sync().channel().closeFuture().await();
         } catch (InterruptedException ex) {
