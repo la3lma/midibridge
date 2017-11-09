@@ -77,8 +77,7 @@ Todo
 
 * Add more of the MIDI protocol to the bridge.  For now it only
   works properly for key on / key off events.  There are many more
-  possible events in MIDI, and it's relatively straightforward (but
-  still time consuming) to add more.
+  possible events in MIDI, and it's relatively straightforward to add more.
 
 * Check out how to modify the sounds of loop running in a step-sequencer
   by twiddling knobs on the synth making the sounds.
