@@ -40,14 +40,18 @@ public class FirebaseDatabaseConfig {
     private static FirebaseDatabase newDatabaseInstance(final String configFile, final String databaseName) throws MidibridgeException {
         try (final FileInputStream serviceAccount = new FileInputStream(configFile)) {
             final FirebaseOptions options = new FirebaseOptions.Builder().setCredential(FirebaseCredentials.fromCertificate(serviceAccount)).setDatabaseUrl("https://" + databaseName + ".firebaseio.com/").build();
-            try {
-                FirebaseApp.getInstance();
-            } catch (Exception e) {
-                FirebaseApp.initializeApp(options);
-            }
+            intializeFirebaseApp(options);
             return FirebaseDatabase.getInstance();
         } catch (IOException ex) {
             throw new MidibridgeException(ex);
+        }
+    }
+
+    private static void intializeFirebaseApp(final FirebaseOptions options) {
+        try {
+            FirebaseApp.getInstance();
+        } catch (Exception e) {
+            FirebaseApp.initializeApp(options);
         }
     }
 
