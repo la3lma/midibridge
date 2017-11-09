@@ -75,7 +75,7 @@ public interface MidiReceiver {
         }
 
         final ShortMessage myMsg
-                = new ShortMessage(cmd.getCmd(), channel, arg1, arg2);
+                = new ShortMessage(midiCommandByte, channel, arg1, arg2);
         put(myMsg);
     }
 }
