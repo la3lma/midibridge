@@ -30,8 +30,6 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         // nothing to do yet
     }
 
-    private final MidiDeviceManager midiDeviceManger = new MidiDeviceManager();
-    private FirebaseEndpointManager firebaseEndpointManager;
 
 
     @Override
@@ -39,12 +37,22 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
             final MidibridgeConfiguration configuration,
             final Environment environment) throws MidibridgeException {
 
-        final FirebaseDatabase firebaseDatabase = configuration.getFirebaseDatabaseConfig().getFirebaseDatabase();
+        final MidiEventResource resource = configMidiRouting(configuration);
 
+        environment.jersey().register(resource);
+    }
+
+    private final MidiDeviceManager midiDeviceManger = new MidiDeviceManager();
+    private FirebaseEndpointManager firebaseEndpointManager;
+    private UdpEndpointManager udpEndpointManager = new UdpEndpointManager();
+
+    private MidiEventResource configMidiRouting(final MidibridgeConfiguration configuration) throws RuntimeException, MidibridgeException {
+        final FirebaseDatabase firebaseDatabase = configuration.getFirebaseDatabaseConfig().getFirebaseDatabase();
         firebaseEndpointManager = new FirebaseEndpointManager(firebaseDatabase);
         firebaseEndpointManager.addAll(configuration.getFirebaseDestinations());
         midiDeviceManger.addAll(configuration.getMidiDestinations());
 
+        udpEndpointManager.addAll(configuration.getUdpDestinations());
         // Set up the firbase to MIDI routes.
         for (final MidiRoute route : configuration.getMidiRoutes()) {
             try {
@@ -57,18 +65,14 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
                 throw new RuntimeException(e);
             }
         }
-
         // XXX The routing is still a bit of a mess.  Needs to be refactored for proper workitude.
 
         // Set up routing of incoming HTTP requests to MIDI.
         final MidiReceiver defaultReceiver = midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver();
         final MidiEventResource resource = new MidiEventResource(defaultReceiver);
-
-        final MidiOverUdpReceivingService udp
-                = new MidiOverUdpReceivingService(6565);
+        final MidiOverUdpReceivingService udp = udpEndpointManager.get("udpMidi").getUdpService();
         udp.addMidiReceiver(defaultReceiver);
-        udp.start();
 
-        environment.jersey().register(resource);
+        return resource;
     }
 }

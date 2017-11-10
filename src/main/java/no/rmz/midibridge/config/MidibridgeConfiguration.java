@@ -15,6 +15,8 @@ public final class MidibridgeConfiguration extends Configuration {
 
     private List<MidiRoute> midiRoutes;
 
+    private List<UdpEndpoint> udpDestinations;
+
     private String httpMidiRoute;
 
     public FirebaseDatabaseConfig getFirebaseDatabaseConfig() {
@@ -23,6 +25,15 @@ public final class MidibridgeConfiguration extends Configuration {
 
     public void setFirebaseDatabaseConfig(final FirebaseDatabaseConfig firebaseDatabaseConfig) {
         this.firebaseDatabaseConfig = firebaseDatabaseConfig;
+    }
+
+    @JsonProperty
+    public List<UdpEndpoint> getUdpDestinations() {
+        return Collections.unmodifiableList(udpDestinations);
+    }
+
+    public void setUdpDestinations(List<UdpEndpoint> udpEndpoints) {
+        this.udpDestinations = udpEndpoints;
     }
 
     @JsonProperty
