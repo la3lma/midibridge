@@ -145,9 +145,21 @@ Todo
   * Make the MIDI-sending queues and the firease-reader into services with
     normal dropwizard lifecycle
 
-* Add more of the MIDI protocol to the bridge.  For now it only
-  works properly for key on / key off events.  There are many more
-  possible events in MIDI, and it's relatively straightforward to add more.
+* Add more of the MIDI protocol to the bridge. Document the various MIDI
+  parameters and how they are represented in the JSON used for REST and
+  Firebase (and UDP).
+
+     Command	Meaning	#               parameters	param 1         param 2
+     0x80	Note-off	        2               key             velocity
+     0x90	Note-on	                2               key             veolcity
+     0xA0	Aftertouch	        2               key             touch
+     0xB0	Continuous controller	2               controller      controller value
+     0xC0	Patch change	        2               instrument      #
+     0xD0	Channel Pressure	1               pressure
+     0xE0	Pitch bend	        2               lsb (7 bits)    msb (7 bits)
+						       " 14 bits  of bend value"
+     0xF0	(non-musical commands)
+
 
 * Check out how to modify the sounds of loop running in a step-sequencer
   by twiddling knobs on the synth making the sounds.
