@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.sound.midi.InvalidMidiDataException;
 
-public final class MidiOverUdpReceivingService {
+public final class MidiOverUdpReceivingService implements MidiEventProducer {
 
     private final int port;
 
@@ -67,6 +67,7 @@ public final class MidiOverUdpReceivingService {
 
     private final UdpServerHandler handler = new UdpServerHandler();
 
+    @Override
     public void addMidiReceiver(final MidiReceiver receiver) {
         checkNotNull(receiver);
         handler.addMidiReceiver(receiver);

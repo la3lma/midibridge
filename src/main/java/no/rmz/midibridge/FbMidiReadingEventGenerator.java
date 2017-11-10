@@ -6,12 +6,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class FbMidiReadingEventGenerator {
+public final class FbMidiReadingEventGenerator implements MidiEventProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(FbMidiReadingEventGenerator.class);
 
     private final FbMidiEventListener listener;
 
+    @Override
     public void addMidiReceiver(MidiReceiver receiver) {
         checkNotNull(receiver);
         listener.addReceiver(receiver);

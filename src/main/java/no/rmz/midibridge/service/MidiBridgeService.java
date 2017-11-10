@@ -5,6 +5,7 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import no.rmz.midibridge.FbMidiReadingEventGenerator;
+import no.rmz.midibridge.MidiEventProducer;
 import no.rmz.midibridge.MidiOverUdpReceivingService;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
@@ -56,7 +57,7 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         // Set up the firbase to MIDI routes.
         for (final MidiRoute route : configuration.getMidiRoutes()) {
             try {
-                final FbMidiReadingEventGenerator midiReadingEventSource
+                final MidiEventProducer midiReadingEventSource
                         = firebaseEndpointManager.get(route.getSource()).getGenerator();
                 final MidiDeviceManager.Entry entryById = midiDeviceManger.getEntryById(route.getDestination());
                 final MidiReceiver receiver = entryById.getReceiver();
@@ -70,7 +71,7 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         // Set up routing of incoming HTTP requests to MIDI.
         final MidiReceiver defaultReceiver = midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver();
         final MidiEventResource resource = new MidiEventResource(defaultReceiver);
-        final MidiOverUdpReceivingService udp = udpEndpointManager.get("udpMidi").getUdpService();
+        final MidiEventProducer udp = udpEndpointManager.get("udpMidi").getUdpService();
         udp.addMidiReceiver(defaultReceiver);
 
         return resource;
