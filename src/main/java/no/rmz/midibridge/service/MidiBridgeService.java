@@ -33,7 +33,6 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         this.midiDeviceManger = new MidiDeviceManager(eventProducerManager);
         this.udpEndpointManager = new UdpEndpointManager(eventProducerManager);
         this.httpEndpointManager = new HttpEndpointManager(eventProducerManager);
-
     }
 
     @Override

@@ -18,7 +18,7 @@ final class HttpEndpointManager {
 
     final MidiReceiver getReceiverForPath(final String endpoint) {
         checkNotNull(endpoint);
-        return idToEndpointMap.get(endpoint);
+        return pathToEndpointMap.get(endpoint);
     }
 
     public final static class Entry implements MidiEventProducer, MidiReceiver {
@@ -56,9 +56,11 @@ final class HttpEndpointManager {
     }
 
     private final Map<String, Entry> idToEndpointMap;
+    private final Map<String, Entry> pathToEndpointMap;
 
     public HttpEndpointManager(final MidiEventProducerMap eventProducerManager) {
         this.idToEndpointMap = new HashMap<>();
+        this.pathToEndpointMap = new HashMap<>();
         this.epm = checkNotNull(eventProducerManager);
     }
 
@@ -76,8 +78,13 @@ final class HttpEndpointManager {
         }
 
         final Entry entry = new Entry(dest.getId(), dest.getPath());
-        idToEndpointMap.put(dest.getId(), entry);
         epm.put(dest.getId(), entry);
+        idToEndpointMap.put(dest.getId(), entry);
+        if (pathToEndpointMap.containsKey(dest.getPath())) {
+            throw new MidibridgeException("Duplicate declaration for http destination " + dest.getPath());
+        } else {
+            pathToEndpointMap.put(dest.getPath(), entry);
+        }
     }
 
     public Entry get(String id) throws MidibridgeException {

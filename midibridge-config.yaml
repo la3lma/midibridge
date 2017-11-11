@@ -50,7 +50,7 @@ udpDestinations:
 ##
 httpDestinations:
     - id: defaultHttp
-      path: /default
+      path: default
 
 ##
 ## Finally list how we route the incoming messages to the
