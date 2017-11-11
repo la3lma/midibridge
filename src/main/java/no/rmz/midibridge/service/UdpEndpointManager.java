@@ -1,29 +1,24 @@
 package no.rmz.midibridge.service;
 
 import com.google.common.base.Preconditions;
-import static com.google.common.base.Preconditions.checkNotNull;
-import java.util.Collection;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import no.rmz.midibridge.MidiEventProducer;
 import no.rmz.midibridge.MidiOverUdpReceivingService;
 import no.rmz.midibridge.MidibridgeException;
 import no.rmz.midibridge.config.UdpEndpoint;
 
-public final class UdpEndpointManager {
+public final class UdpEndpointManager extends AbstractEndpointManager<UdpEndpoint> {
 
-    private static final Logger LOG = Logger.getLogger(UdpEndpointManager.class.getName());
-    private final MidiEventProducerMap epm;
-
-    public UdpEndpointManager(MidiEventProducerMap eventProducerManager) {
-        this.epm = checkNotNull(eventProducerManager);
+    public UdpEndpointManager(final MidiEventProducerMap eventProducerManager) {
+        super(eventProducerManager);
     }
 
-    public static final class Entry {
+    public static final class UdpEntry implements MidiEventProducerEntry {
 
         final UdpEndpoint endpoint;
         final MidiOverUdpReceivingService udpService;
 
-        public Entry(final UdpEndpoint endpoint) throws MidibridgeException {
+        public UdpEntry(final UdpEndpoint endpoint) throws MidibridgeException {
             this.endpoint = Preconditions.checkNotNull(endpoint);
             this.udpService = new MidiOverUdpReceivingService(endpoint.getPort());
             new Thread(() -> {
@@ -35,26 +30,14 @@ public final class UdpEndpointManager {
             }).start();
         }
 
-
-        public MidiOverUdpReceivingService getUdpService() {
+        @Override
+        public MidiEventProducer getMidiEventProducer() {
             return udpService;
         }
-
-        public UdpEndpoint getEndpoint() {
-            return endpoint;
-        }
     }
 
-    void addAll(final Collection<UdpEndpoint> endpoints) throws MidibridgeException {
-        Preconditions.checkNotNull(endpoints);
-        for (final UdpEndpoint dest : endpoints) {
-            add(dest);
-        }
-    }
-
-    public void add(final UdpEndpoint endpoint) throws MidibridgeException {
-        Preconditions.checkNotNull(endpoint);
-        final Entry entry = new Entry(endpoint);
-        epm.put(endpoint.getId(), entry.getUdpService());
+    @Override
+    public MidiEventProducerEntry newEntry(UdpEndpoint endpoint) throws MidibridgeException {
+        return new UdpEntry(endpoint);
     }
 }
