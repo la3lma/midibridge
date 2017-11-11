@@ -1,31 +1,66 @@
-# final String configFile = "fbmidibridge-1746b45f5da7.json";  // arg2
-# final String databaseName = "fbmidibridge"; // arg1
-# final String pathToListenForEventsIn = "testchannel"; // arg3
-# final String midiDeviceName = "toReason"; // arg4
+###
+###   Sample config file for the midibridge.
+###   You should remove the bits you don't want to use
+###   (e.g. firebase), and add more of what you want
+###   (e.g. more REST endpoints).
+###
+
+##
+## First a bit of firebase config.   For now this is
+## necessary, the whole thing will crash if firebase is
+## not enabled.  XXX That is something that should
+## be optional.
+##
 
 firebaseDatabaseConfig:
     configFile: fbmidibridge-1746b45f5da7.json
     databaseName: fbmidibridge
 
-
-midiDestinations:
-   - id:  toReason
-     midiDeviceName: toReason
+##
+## Declare the firebase endpoints that will receive
+## incoming MIDI messages.
+##
 
 firebaseDestinations:
     - id: testchannel
       path: testchannel
 
+
+##
+## Set up a list of MIDI destinations.  The names are
+## names of destinations visible to the Java MIDI system
+## running on the host
+##
+
+midiDestinations:
+   - id:  toReason
+     midiDeviceName: toReason
+
+
+##
+## List the UDP destinations that will receive MIDI messages.
+##
 udpDestinations:
     - id:   udpMidi
       port: 6565
 
+##
+## List the Http POST destinations that will receive incoming
+## MIDI messages
+##
+httpDestinations:
+    - id: defaultHttp
+      path: /default
+
+##
+## Finally list how we route the incoming messages to the
+## MIDI destinations that are available.
+##
 
 midiRoutes:
     - source: testchannel
       destination: toReason
-
-httpMidiRoute:  toReason
-
-#  XXX So far not setting up routing for web input.  Need to look into that a bit.
-#      probably use the same framework as for firebase/midi.
+    - source: defaultHttp
+      destination: toReason
+    - source: udpMidi
+      destination: toReason

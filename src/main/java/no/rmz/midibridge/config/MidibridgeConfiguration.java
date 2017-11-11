@@ -2,8 +2,10 @@ package no.rmz.midibridge.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import no.rmz.midibridge.service.HttpEndpointConfig;
 
 public final class MidibridgeConfiguration extends Configuration {
 
@@ -18,6 +20,7 @@ public final class MidibridgeConfiguration extends Configuration {
     private List<UdpEndpoint> udpDestinations;
 
     private String httpMidiRoute;
+    private Collection<HttpEndpointConfig> httpDestinations;
 
     public FirebaseDatabaseConfig getFirebaseDatabaseConfig() {
         return firebaseDatabaseConfig;
@@ -71,8 +74,18 @@ public final class MidibridgeConfiguration extends Configuration {
         this.httpMidiRoute = httpMidiRoute;
     }
 
+    @JsonProperty
+    public Collection<HttpEndpointConfig> getHttpDestinations() {
+        return this.httpDestinations;
+    }
+
+    public void setHttpDestinations(Collection<HttpEndpointConfig> httpDestinations) {
+        this.httpDestinations = httpDestinations;
+    }
+
     @Override
     public String toString() {
-        return "MidibridgeConfiguration{" + "firebaseDatabaseConfig=" + firebaseDatabaseConfig + ", firebaseDestinations=" + firebaseDestinations + ", midiDestinations=" + midiDestinations + ", midiRoutes=" + midiRoutes + ", httpMidiRoute=" + httpMidiRoute + '}';
+        return "MidibridgeConfiguration{" + "firebaseDatabaseConfig=" + firebaseDatabaseConfig + ", firebaseDestinations=" + firebaseDestinations + ", midiDestinations=" + midiDestinations + ", midiRoutes=" + midiRoutes + ", udpDestinations=" + udpDestinations + ", httpMidiRoute=" + httpMidiRoute + '}';
     }
+
 }

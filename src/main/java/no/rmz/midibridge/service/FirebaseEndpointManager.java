@@ -12,6 +12,8 @@ import no.rmz.midibridge.config.FirebaseDestination;
 
 public final class FirebaseEndpointManager {
 
+    private final MidiBridgeService.MidiEventProducerMap epm;
+
     public final static class Entry {
 
         final FbMidiReadingEventGenerator generator;
@@ -29,9 +31,12 @@ public final class FirebaseEndpointManager {
     private final Map<String, Entry> idToEndpointMap;
     final FirebaseDatabase db;
 
-    public FirebaseEndpointManager(final FirebaseDatabase db) {
+    public FirebaseEndpointManager(
+            final FirebaseDatabase db,
+            final MidiBridgeService.MidiEventProducerMap eventProducerManager) {
         this.idToEndpointMap = new HashMap<>();
         this.db = checkNotNull(db);
+        this.epm = checkNotNull(eventProducerManager);
     }
 
     void addAll(final Collection<FirebaseDestination> firebaseDestinations) throws MidibridgeException {
@@ -49,6 +54,7 @@ public final class FirebaseEndpointManager {
 
         final Entry entry = new Entry(dest.getPath(), db);
         idToEndpointMap.put(dest.getId(), entry);
+        epm.put(dest.getId(), entry.getGenerator());
     }
 
     public Entry get(String id) throws MidibridgeException {
