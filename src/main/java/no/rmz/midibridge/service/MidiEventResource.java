@@ -20,7 +20,7 @@ public class MidiEventResource {
 
     @POST
     // @Timed
-    public Response sayHello(@PathParam("endpoint") String endpoint, final FbMidiEventBean event) throws MidibridgeException {
+    public Response sayHello(final @PathParam("endpoint") String endpoint, final FbMidiEventBean event) throws MidibridgeException {
         final MidiReceiver mr;
         mr = this.httpEndpointManager.getReceiverForPath(endpoint);
         if (mr == null) {

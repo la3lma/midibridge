@@ -18,6 +18,8 @@ public final class MidiRoutingManager {
     private final MidiEventResource resource;
 
     public MidiRoutingManager(final MidibridgeConfiguration configuration) throws MidibridgeException {
+
+        // Parse config & start services
         checkNotNull(configuration);
         this.eventProducerManager = new MidiEventProducerMap();
         this.midiDeviceManger = new MidiDeviceManager();
@@ -30,7 +32,11 @@ public final class MidiRoutingManager {
         udpEndpointManager.addAll(configuration.getUdpDestinations());
         midiDeviceManger.addAll(configuration.getMidiDestinations());
 
+        // Set up routes.
         setUpRoutes(configuration);
+
+        // Create resource to handle HTTP requests, to be picked up
+        // by dropwizard and be injected into Jersey.
         this.resource = new MidiEventResource(httpEndpointManager);
     }
 

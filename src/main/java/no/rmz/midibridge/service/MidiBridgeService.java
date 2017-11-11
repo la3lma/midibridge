@@ -40,6 +40,7 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         } catch (MidibridgeException ex) {
             throw new RuntimeException(ex); // Ghetto!
         }
+
         final MidiEventResource resource = midiRoutingManager.getResource();
 
         environment.jersey().register(resource);
