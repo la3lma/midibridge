@@ -3,8 +3,6 @@ package no.rmz.midibridge.service;
 import com.google.common.base.Preconditions;
 import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import no.rmz.midibridge.MidiOverUdpReceivingService;
@@ -18,7 +16,6 @@ public final class UdpEndpointManager {
 
     public UdpEndpointManager(MidiEventProducerMap eventProducerManager) {
         this.epm = checkNotNull(eventProducerManager);
-        this.idToEndpointMap = new HashMap<>();
     }
 
     public static final class Entry {
@@ -47,7 +44,6 @@ public final class UdpEndpointManager {
             return endpoint;
         }
     }
-    private final Map<String, Entry> idToEndpointMap;
 
     void addAll(final Collection<UdpEndpoint> endpoints) throws MidibridgeException {
         Preconditions.checkNotNull(endpoints);
@@ -58,19 +54,7 @@ public final class UdpEndpointManager {
 
     public void add(final UdpEndpoint endpoint) throws MidibridgeException {
         Preconditions.checkNotNull(endpoint);
-        if (idToEndpointMap.containsKey(endpoint.getId())) {
-            throw new MidibridgeException("Multiple declarations of firebase destination with id = " + endpoint.getId());
-        }
         final Entry entry = new Entry(endpoint);
-        idToEndpointMap.put(endpoint.getId(), entry);
         epm.put(endpoint.getId(), entry.getUdpService());
-    }
-
-    public Entry get(String id) throws MidibridgeException {
-        if (idToEndpointMap.containsKey(id)) {
-            return idToEndpointMap.get(id);
-        } else {
-            throw new MidibridgeException("Unknown firebase endpoint named: " + id);
-        }
     }
 }

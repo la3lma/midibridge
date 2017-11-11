@@ -1,13 +1,9 @@
 package no.rmz.midibridge.service;
 
-import com.google.firebase.database.FirebaseDatabase;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import no.rmz.midibridge.MidiEventProducer;
-import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
-import no.rmz.midibridge.config.MidiRoute;
 import no.rmz.midibridge.config.MidibridgeConfiguration;
 
 public class MidiBridgeService extends Application<MidibridgeConfiguration> {
@@ -19,20 +15,8 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         new MidiBridgeService().run(args);
     }
 
-    // XXX This stuff is getting _really_ ripe for both
-    //    a) Some proper unit tests.
-    //    b) Some radical refactoring.
-    private MidiEventProducerMap eventProducerManager;
-    private MidiDeviceManager midiDeviceManger;
-    private FirebaseEndpointManager firebaseEndpointManager;
-    private UdpEndpointManager udpEndpointManager;
-    private HttpEndpointManager httpEndpointManager;
-
     public MidiBridgeService() {
-        this.eventProducerManager = new MidiEventProducerMap();
-        this.midiDeviceManger = new MidiDeviceManager(eventProducerManager);
-        this.udpEndpointManager = new UdpEndpointManager(eventProducerManager);
-        this.httpEndpointManager = new HttpEndpointManager(eventProducerManager);
+
     }
 
     @Override
@@ -48,42 +32,16 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
     @Override
     public void run(
             final MidibridgeConfiguration configuration,
-            final Environment environment) throws MidibridgeException {
+            final Environment environment) {
 
-        final MidiEventResource resource = configMidiRouting(configuration);
+        final MidiRoutingManager midiRoutingManager;
+        try {
+            midiRoutingManager = new MidiRoutingManager(configuration);
+        } catch (MidibridgeException ex) {
+            throw new RuntimeException(ex); // Ghetto!
+        }
+        final MidiEventResource resource = midiRoutingManager.getResource();
 
         environment.jersey().register(resource);
-    }
-
-    private MidiEventResource configMidiRouting(final MidibridgeConfiguration configuration) throws RuntimeException, MidibridgeException {
-
-        final FirebaseDatabase firebaseDatabase = configuration.getFirebaseDatabaseConfig().getFirebaseDatabase();
-        firebaseEndpointManager = new FirebaseEndpointManager(firebaseDatabase, eventProducerManager);
-        firebaseEndpointManager.addAll(configuration.getFirebaseDestinations());
-        httpEndpointManager.addAll(configuration.getHttpDestinations());
-        udpEndpointManager.addAll(configuration.getUdpDestinations());
-
-        midiDeviceManger.addAll(configuration.getMidiDestinations());
-        for (final MidiRoute route : configuration.getMidiRoutes()) {
-            try {
-                final String source = route.getSource();
-                final MidiEventProducer producer = eventProducerManager.get(source);
-                if (producer == null) {
-                    throw new MidibridgeException("Unknown midi event producer " + source);
-                }
-                final String destination = route.getDestination();
-                final MidiReceiver receiver = midiDeviceManger.getEntryById(destination).getReceiver();
-                if (receiver == null) {
-                    throw new MidibridgeException("Unknown midi receiver " + source);
-                }
-
-                producer.addMidiReceiver(receiver);
-            } catch (MidibridgeException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        final MidiEventResource resource = new MidiEventResource(httpEndpointManager);
-        return resource;
     }
 }

@@ -1,7 +1,6 @@
 package no.rmz.midibridge.service;
 
 import com.google.common.base.Preconditions;
-import static com.google.common.base.Preconditions.checkNotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +14,7 @@ import no.rmz.midibridge.config.MidiDestination;
 
 public final class MidiDeviceManager {
 
-    private final MidiEventProducerMap epm;
-
-    public MidiDeviceManager(MidiEventProducerMap eventProducerManager) {
-        this.epm = checkNotNull(eventProducerManager);
+    public MidiDeviceManager() {
         this.devices = new HashMap<>();
     }
 

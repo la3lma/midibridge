@@ -4,8 +4,6 @@ import com.google.common.base.Preconditions;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.firebase.database.FirebaseDatabase;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import no.rmz.midibridge.FbMidiReadingEventGenerator;
 import no.rmz.midibridge.MidibridgeException;
 import no.rmz.midibridge.config.FirebaseDestination;
@@ -25,16 +23,13 @@ public final class FirebaseEndpointManager {
         public FbMidiReadingEventGenerator getGenerator() {
             return generator;
         }
-
     }
 
-    private final Map<String, Entry> idToEndpointMap;
     final FirebaseDatabase db;
 
     public FirebaseEndpointManager(
             final FirebaseDatabase db,
             final MidiEventProducerMap eventProducerManager) {
-        this.idToEndpointMap = new HashMap<>();
         this.db = checkNotNull(db);
         this.epm = checkNotNull(eventProducerManager);
     }
@@ -45,23 +40,10 @@ public final class FirebaseEndpointManager {
             add(dest);
         }
     }
-
     public void add(final FirebaseDestination dest) throws MidibridgeException {
         Preconditions.checkNotNull(dest);
-        if (idToEndpointMap.containsKey(dest.getId())) {
-            throw new MidibridgeException("Multiple declarations of firebase destination with id = " + dest.getId());
-        }
 
         final Entry entry = new Entry(dest.getPath(), db);
-        idToEndpointMap.put(dest.getId(), entry);
         epm.put(dest.getId(), entry.getGenerator());
-    }
-
-    public Entry get(String id) throws MidibridgeException {
-        if (idToEndpointMap.containsKey(id)) {
-            return idToEndpointMap.get(id);
-        } else {
-            throw new MidibridgeException("Unknown firebase endpoint named: " + id);
-        }
     }
 }

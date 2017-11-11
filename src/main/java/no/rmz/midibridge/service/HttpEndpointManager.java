@@ -16,15 +16,15 @@ final class HttpEndpointManager {
 
     private final MidiEventProducerMap epm;
 
-    final MidiReceiver getReceiverForPath(final String endpoint) {
+    public final MidiReceiver getReceiverForPath(final String endpoint) {
         checkNotNull(endpoint);
         return pathToEndpointMap.get(endpoint);
     }
 
     public final static class Entry implements MidiEventProducer, MidiReceiver {
 
-        private String id;
-        private String path;
+        private final String id;
+        private final String path;
 
         public Entry(final String id, final String path) {
             this.id = checkNotNull(id);
@@ -55,11 +55,9 @@ final class HttpEndpointManager {
         }
     }
 
-    private final Map<String, Entry> idToEndpointMap;
     private final Map<String, Entry> pathToEndpointMap;
 
     public HttpEndpointManager(final MidiEventProducerMap eventProducerManager) {
-        this.idToEndpointMap = new HashMap<>();
         this.pathToEndpointMap = new HashMap<>();
         this.epm = checkNotNull(eventProducerManager);
     }
@@ -73,25 +71,15 @@ final class HttpEndpointManager {
 
     public void add(final HttpEndpointConfig dest) throws MidibridgeException {
         Preconditions.checkNotNull(dest);
-        if (idToEndpointMap.containsKey(dest.getId())) {
-            throw new MidibridgeException("Multiple declarations of firebase destination with id = " + dest.getId());
-        }
+
 
         final Entry entry = new Entry(dest.getId(), dest.getPath());
         epm.put(dest.getId(), entry);
-        idToEndpointMap.put(dest.getId(), entry);
+
         if (pathToEndpointMap.containsKey(dest.getPath())) {
             throw new MidibridgeException("Duplicate declaration for http destination " + dest.getPath());
         } else {
             pathToEndpointMap.put(dest.getPath(), entry);
-        }
-    }
-
-    public Entry get(String id) throws MidibridgeException {
-        if (idToEndpointMap.containsKey(id)) {
-            return idToEndpointMap.get(id);
-        } else {
-            throw new MidibridgeException("Unknown firebase endpoint named: " + id);
         }
     }
 }
