@@ -49,8 +49,6 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         // nothing to do yet
     }
 
-
-
     @Override
     public void run(
             final MidibridgeConfiguration configuration,
@@ -90,35 +88,8 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
             }
         }
 
-//        final MidiReceiver defaultReceiver = midiDeviceManger.getEntryById(configuration.getHttpMidiRoute()).getReceiver();
         final MidiEventResource resource = new MidiEventResource(httpEndpointManager);
-//        final MidiEventProducer udp = udpEndpointManager.get("udpMidi").getUdpService();
-//        udp.addMidiReceiver(defaultReceiver);
-
         return resource;
     }
 
-    public static class MidiEventProducerMap {
-
-        private final Map<String, MidiEventProducer> map;
-
-        public MidiEventProducerMap() {
-            this.map = new HashMap<>();
-        }
-
-        public void put(final String id, final MidiEventProducer entry) throws MidibridgeException {
-            checkNotNull(id);
-            checkNotNull(entry);
-            if (map.containsKey(id)) {
-                throw new MidibridgeException("Duplicate midi event producer: " + id);
-            } else {
-                map.put(id, entry);
-            }
-        }
-
-        public MidiEventProducer get(final String id) {
-            checkNotNull(id);
-            return map.get(id);
-        }
-    }
 }

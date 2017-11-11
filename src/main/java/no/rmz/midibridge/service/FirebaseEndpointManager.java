@@ -12,7 +12,7 @@ import no.rmz.midibridge.config.FirebaseDestination;
 
 public final class FirebaseEndpointManager {
 
-    private final MidiBridgeService.MidiEventProducerMap epm;
+    private final MidiEventProducerMap epm;
 
     public final static class Entry {
 
@@ -33,7 +33,7 @@ public final class FirebaseEndpointManager {
 
     public FirebaseEndpointManager(
             final FirebaseDatabase db,
-            final MidiBridgeService.MidiEventProducerMap eventProducerManager) {
+            final MidiEventProducerMap eventProducerManager) {
         this.idToEndpointMap = new HashMap<>();
         this.db = checkNotNull(db);
         this.epm = checkNotNull(eventProducerManager);

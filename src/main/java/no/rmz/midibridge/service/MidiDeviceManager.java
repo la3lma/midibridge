@@ -15,9 +15,9 @@ import no.rmz.midibridge.config.MidiDestination;
 
 public final class MidiDeviceManager {
 
-    private final MidiBridgeService.MidiEventProducerMap epm;
+    private final MidiEventProducerMap epm;
 
-    public MidiDeviceManager(MidiBridgeService.MidiEventProducerMap eventProducerManager) {
+    public MidiDeviceManager(MidiEventProducerMap eventProducerManager) {
         this.epm = checkNotNull(eventProducerManager);
         this.devices = new HashMap<>();
     }

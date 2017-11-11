@@ -14,7 +14,7 @@ import no.rmz.midibridge.MidibridgeException;
 
 final class HttpEndpointManager {
 
-    private final MidiBridgeService.MidiEventProducerMap epm;
+    private final MidiEventProducerMap epm;
 
     final MidiReceiver getReceiverForPath(final String endpoint) {
         checkNotNull(endpoint);
@@ -57,7 +57,7 @@ final class HttpEndpointManager {
 
     private final Map<String, Entry> idToEndpointMap;
 
-    public HttpEndpointManager(final MidiBridgeService.MidiEventProducerMap eventProducerManager) {
+    public HttpEndpointManager(final MidiEventProducerMap eventProducerManager) {
         this.idToEndpointMap = new HashMap<>();
         this.epm = checkNotNull(eventProducerManager);
     }

@@ -14,9 +14,9 @@ import no.rmz.midibridge.config.UdpEndpoint;
 public final class UdpEndpointManager {
 
     private static final Logger LOG = Logger.getLogger(UdpEndpointManager.class.getName());
-    private final MidiBridgeService.MidiEventProducerMap epm;
+    private final MidiEventProducerMap epm;
 
-    public UdpEndpointManager(MidiBridgeService.MidiEventProducerMap eventProducerManager) {
+    public UdpEndpointManager(MidiEventProducerMap eventProducerManager) {
         this.epm = checkNotNull(eventProducerManager);
         this.idToEndpointMap = new HashMap<>();
     }
