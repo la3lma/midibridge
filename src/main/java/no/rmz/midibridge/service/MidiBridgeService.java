@@ -1,12 +1,9 @@
 package no.rmz.midibridge.service;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.firebase.database.FirebaseDatabase;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-import java.util.HashMap;
-import java.util.Map;
 import no.rmz.midibridge.MidiEventProducer;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
@@ -68,7 +65,6 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         udpEndpointManager.addAll(configuration.getUdpDestinations());
 
         midiDeviceManger.addAll(configuration.getMidiDestinations());
-        // Set up the firbase to MIDI routes.
         for (final MidiRoute route : configuration.getMidiRoutes()) {
             try {
                 final String source = route.getSource();
@@ -91,5 +87,4 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
         final MidiEventResource resource = new MidiEventResource(httpEndpointManager);
         return resource;
     }
-
 }
