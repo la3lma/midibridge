@@ -165,3 +165,10 @@ Todo
   by twiddling knobs on the synth making the sounds.
 
 * https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers
+
+* Look at https://docs.oracle.com/javase/tutorial/sound/MIDI-messages.html, then
+  make a way to use the internal MIDI synth, for getting started with only the
+  .jar file installed.
+
+* Make it possible to not use firebase, and not have the rest of the program
+  crashing.
