@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.Synthesizer;
 import no.rmz.midibridge.BufferedMidiReceiver;
 import no.rmz.midibridge.IacDeviceUtilities;
 import no.rmz.midibridge.MidiReceiver;
@@ -24,16 +27,42 @@ public final class MidiDeviceManager {
         private final MidiDestination dest;
         private final MidiReceiver receiver;
 
-        public Entry(final MidiDestination dest) throws MidibridgeException {
-            this.dest = Preconditions.checkNotNull(dest);
-            this.id = dest.getId();
-            final MidiDevice midiDevice = IacDeviceUtilities.getMidiReceivingDevice(dest.getMidiDeviceName());
+        private Receiver getBuiltinSynthReceiver() throws MidibridgeException {
             try {
-                this.receiver = new BufferedMidiReceiver(midiDevice.getReceiver());
+                final Synthesizer synth = MidiSystem.getSynthesizer();
+                return synth.getReceiver();
+            } catch (MidiUnavailableException e) {
+                throw new MidibridgeException("Couldn't open internal synth", e);
+            }
+        }
+
+        private Receiver getReceiverForNamedMidiDevice(final String midiDeviceName) throws MidibridgeException {
+            final MidiDevice midiDevice;
+            midiDevice = IacDeviceUtilities.getMidiReceivingDevice(midiDeviceName);
+            try {
+                return midiDevice.getReceiver();
             } catch (MidiUnavailableException ex) {
                 throw new MidibridgeException(ex);
             }
         }
+
+        public Entry(final MidiDestination dest) throws MidibridgeException {
+            this.dest = Preconditions.checkNotNull(dest);
+            this.id = dest.getId();
+            final String midiDeviceName = dest.getMidiDeviceName();
+
+            // If the midi device is called "default", then we're assuming
+            // that the events should be routed to Java's MIDI system's
+            // built in synthesizer.
+            final Receiver midiReceiver;
+            if ("default".equals(midiDeviceName)) {
+                midiReceiver = getBuiltinSynthReceiver();
+            } else {
+                midiReceiver = getReceiverForNamedMidiDevice(midiDeviceName);
+            }
+            this.receiver = new BufferedMidiReceiver(midiReceiver);
+        }
+
 
         public String getId() {
             return id;
