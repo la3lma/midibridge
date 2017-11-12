@@ -1,10 +1,11 @@
 package no.rmz.midibridge.service;
 
-public class HttpEndpointConfig {
+public class HttpEndpointConfig implements NamedEntity {
     private String id;
 
     private String path;
 
+    @Override
     public String getId() {
         return id;
     }

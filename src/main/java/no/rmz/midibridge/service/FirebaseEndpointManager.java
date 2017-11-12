@@ -1,26 +1,25 @@
 package no.rmz.midibridge.service;
 
-import com.google.common.base.Preconditions;
 import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.firebase.database.FirebaseDatabase;
-import java.util.Collection;
-import no.rmz.midibridge.FbMidiReadingEventGenerator;
+import no.rmz.midibridge.FbMidiReadingEventProducer;
+import no.rmz.midibridge.MidiEventProducer;
 import no.rmz.midibridge.MidibridgeException;
 import no.rmz.midibridge.config.FirebaseDestination;
 
-public final class FirebaseEndpointManager {
+public final class FirebaseEndpointManager extends AbstractEndpointManager<FirebaseDestination> {
 
-    private final MidiEventProducerMap epm;
 
-    public final static class Entry {
+    public final static class Entry implements MidiEventProducerEntry {
 
-        final FbMidiReadingEventGenerator generator;
+        private final FbMidiReadingEventProducer generator;
 
         public Entry(final String path, FirebaseDatabase db) throws MidibridgeException {
-            this.generator = new FbMidiReadingEventGenerator(db, path);
+            this.generator = new FbMidiReadingEventProducer(db, path);
         }
 
-        public FbMidiReadingEventGenerator getGenerator() {
+        @Override
+        public MidiEventProducer getMidiEventProducer() {
             return generator;
         }
     }
@@ -29,21 +28,13 @@ public final class FirebaseEndpointManager {
 
     public FirebaseEndpointManager(
             final FirebaseDatabase db,
-            final MidiEventProducerMap eventProducerManager) {
+            final MidiEventProducerMap epm) {
+        super(epm);
         this.db = checkNotNull(db);
-        this.epm = checkNotNull(eventProducerManager);
     }
 
-    void addAll(final Collection<FirebaseDestination> firebaseDestinations) throws MidibridgeException {
-        Preconditions.checkNotNull(firebaseDestinations);
-        for (final FirebaseDestination dest : firebaseDestinations) {
-            add(dest);
-        }
-    }
-    public void add(final FirebaseDestination dest) throws MidibridgeException {
-        Preconditions.checkNotNull(dest);
-
-        final Entry entry = new Entry(dest.getPath(), db);
-        epm.put(dest.getId(), entry.getGenerator());
+    @Override
+    MidiEventProducerEntry newEntry(FirebaseDestination dest) throws MidibridgeException {
+        return new Entry(dest.getPath(), db);
     }
 }

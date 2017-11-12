@@ -1,14 +1,16 @@
 package no.rmz.midibridge.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import no.rmz.midibridge.service.NamedEntity;
 
-public final class FirebaseDestination {
+public final class FirebaseDestination implements NamedEntity {
 
     private String id;
 
     private String path;
 
     @JsonProperty
+    @Override
     public String getId() {
         return id;
     }

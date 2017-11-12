@@ -22,10 +22,11 @@ public abstract class AbstractEndpointManager<T extends NamedEntity> {
         }
     }
 
-    public void add(final T endpoint) throws MidibridgeException {
+    public MidiEventProducerEntry add(final T endpoint) throws MidibridgeException {
         Preconditions.checkNotNull(endpoint);
         final MidiEventProducerEntry entry = newEntry(endpoint);
         epm.put(endpoint.getId(), entry.getMidiEventProducer());
+        return entry;
     }
 
     abstract MidiEventProducerEntry newEntry(T t) throws MidibridgeException;

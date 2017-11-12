@@ -6,9 +6,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class FbMidiReadingEventGenerator implements MidiEventProducer {
+public final class FbMidiReadingEventProducer implements MidiEventProducer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FbMidiReadingEventGenerator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FbMidiReadingEventProducer.class);
 
     private final FbMidiEventListener listener;
 
@@ -18,7 +18,7 @@ public final class FbMidiReadingEventGenerator implements MidiEventProducer {
         listener.addReceiver(receiver);
     }
 
-    public FbMidiReadingEventGenerator(
+    public FbMidiReadingEventProducer(
             final FirebaseDatabase firebaseDatabase,
             final String eventpath) throws MidibridgeException {
         checkNotNull(firebaseDatabase);
