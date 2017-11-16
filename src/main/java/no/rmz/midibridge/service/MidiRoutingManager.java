@@ -29,7 +29,8 @@ public final class MidiRoutingManager {
 
         if (firebaseDatabaseConfig != null) {
             final FirebaseDatabase firebaseDatabase = firebaseDatabaseConfig.getFirebaseDatabase();
-            final FirebaseEndpointManager firebaseEndpointManager = new FirebaseEndpointManager(firebaseDatabase, eventProducerManager);
+            final FirebaseEndpointManager firebaseEndpointManager =
+                    new FirebaseEndpointManager(firebaseDatabase, eventProducerManager);
             firebaseEndpointManager.addAll(configuration.getFirebaseDestinations());
         }
         if (configuration.getHttpDestinations() != null) {
