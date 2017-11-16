@@ -36,7 +36,7 @@ public enum MidiCmd {
         return noOfArgs;
     }
 
-    private MidiCmd(int cmd, int noOfArgs) {
+    MidiCmd(int cmd, int noOfArgs) {
         this.cmd = cmd;
         this.noOfArgs = noOfArgs;
     }

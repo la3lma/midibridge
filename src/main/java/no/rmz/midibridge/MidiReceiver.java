@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 
 public interface MidiReceiver {
 
-    static final Logger LOG = LoggerFactory.getLogger(MidiReceiver.class);
+    Logger LOG = LoggerFactory.getLogger(MidiReceiver.class);
 
-    public void put(ShortMessage msg);
+    void put(ShortMessage msg);
 
     default void put(final FbMidiEventBean midiEvent) throws MidibridgeException {
         checkNotNull(midiEvent);
