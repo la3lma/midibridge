@@ -13,8 +13,13 @@ public final class UdpEndpointManager extends AbstractEndpointManager<UdpEndpoin
         super(eventProducerManager);
     }
 
-    public static final class UdpEntry implements MidiEventProducerEntry {
 
+    @Override
+    public MidiEventProducerEntry newEntry(UdpEndpoint endpoint) throws MidibridgeException {
+        return new UdpEntry(endpoint);
+    }
+    public static final class UdpEntry implements MidiEventProducerEntry {
+        
         final UdpEndpoint endpoint;
         final MidiOverUdpReceivingService udpService;
 
@@ -34,10 +39,5 @@ public final class UdpEndpointManager extends AbstractEndpointManager<UdpEndpoin
         public MidiEventProducer getMidiEventProducer() {
             return udpService;
         }
-    }
-
-    @Override
-    public MidiEventProducerEntry newEntry(UdpEndpoint endpoint) throws MidibridgeException {
-        return new UdpEntry(endpoint);
     }
 }

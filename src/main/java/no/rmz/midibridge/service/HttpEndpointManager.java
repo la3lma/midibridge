@@ -18,28 +18,6 @@ public final class HttpEndpointManager extends AbstractEndpointManager<HttpEndpo
         this.pathToEndpointMap = new HashMap<>();
     }
 
-    public final static class Entry implements MidiEventProducer, MidiReceiver, MidiEventProducerEntry {
-
-        private final Set<MidiReceiver> receivers = new HashSet<>();
-
-        @Override
-        public void addMidiReceiver(final MidiReceiver receiver) {
-            receivers.add(receiver);
-        }
-
-        @Override
-        public void put(final ShortMessage msg) {
-            checkNotNull(msg);
-            for (final MidiReceiver r : receivers) {
-                r.put(msg);
-            }
-        }
-
-        @Override
-        public MidiEventProducer getMidiEventProducer() {
-            return this;
-        }
-    }
 
     @Override
     MidiEventProducerEntry newEntry(HttpEndpointConfig dest) throws MidibridgeException {
@@ -64,5 +42,27 @@ public final class HttpEndpointManager extends AbstractEndpointManager<HttpEndpo
     public final MidiReceiver getReceiverForPath(final String endpoint) {
         checkNotNull(endpoint);
         return pathToEndpointMap.get(endpoint);
+    }
+    public final static class Entry implements MidiEventProducer, MidiReceiver, MidiEventProducerEntry {
+        
+        private final Set<MidiReceiver> receivers = new HashSet<>();
+        
+        @Override
+        public void addMidiReceiver(final MidiReceiver receiver) {
+            receivers.add(receiver);
+        }
+        
+        @Override
+        public void put(final ShortMessage msg) {
+            checkNotNull(msg);
+            for (final MidiReceiver r : receivers) {
+                r.put(msg);
+            }
+        }
+        
+        @Override
+        public MidiEventProducer getMidiEventProducer() {
+            return this;
+        }
     }
 }

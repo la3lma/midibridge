@@ -9,10 +9,27 @@ import java.io.IOException;
 import no.rmz.midibridge.MidibridgeException;
 
 public class FirebaseDatabaseConfig {
+    private static FirebaseDatabase newDatabaseInstance(final String configFile, final String databaseName) throws MidibridgeException {
+        try (final FileInputStream serviceAccount = new FileInputStream(configFile)) {
+            final FirebaseOptions options = new FirebaseOptions.Builder().setCredential(FirebaseCredentials.fromCertificate(serviceAccount)).setDatabaseUrl("https://" + databaseName + ".firebaseio.com/").build();
+            intializeFirebaseApp(options);
+            return FirebaseDatabase.getInstance();
+        } catch (IOException ex) {
+            throw new MidibridgeException(ex);
+        }
+    }
+    private static void intializeFirebaseApp(final FirebaseOptions options) {
+        try {
+            FirebaseApp.getInstance();
+        } catch (Exception e) {
+            FirebaseApp.initializeApp(options);
+        }
+    }
 
     private String configFile;
 
     private String databaseName;
+    private FirebaseDatabase firebaseDatabase;
 
     public String getConfigFile() {
         return configFile;
@@ -35,25 +52,6 @@ public class FirebaseDatabaseConfig {
         return "FirebaseDatabaseConfig{" + "configFile=" + configFile + ", databaseName=" + databaseName + '}';
     }
 
-    private FirebaseDatabase firebaseDatabase;
-
-    private static FirebaseDatabase newDatabaseInstance(final String configFile, final String databaseName) throws MidibridgeException {
-        try (final FileInputStream serviceAccount = new FileInputStream(configFile)) {
-            final FirebaseOptions options = new FirebaseOptions.Builder().setCredential(FirebaseCredentials.fromCertificate(serviceAccount)).setDatabaseUrl("https://" + databaseName + ".firebaseio.com/").build();
-            intializeFirebaseApp(options);
-            return FirebaseDatabase.getInstance();
-        } catch (IOException ex) {
-            throw new MidibridgeException(ex);
-        }
-    }
-
-    private static void intializeFirebaseApp(final FirebaseOptions options) {
-        try {
-            FirebaseApp.getInstance();
-        } catch (Exception e) {
-            FirebaseApp.initializeApp(options);
-        }
-    }
 
     public FirebaseDatabase getFirebaseDatabase() {
         if (firebaseDatabase == null) {

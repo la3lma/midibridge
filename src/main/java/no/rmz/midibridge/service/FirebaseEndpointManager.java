@@ -10,19 +10,6 @@ import no.rmz.midibridge.config.FirebaseDestination;
 public final class FirebaseEndpointManager extends AbstractEndpointManager<FirebaseDestination> {
 
 
-    public final static class Entry implements MidiEventProducerEntry {
-
-        private final FbMidiReadingEventProducer generator;
-
-        public Entry(final String path, FirebaseDatabase db) throws MidibridgeException {
-            this.generator = new FbMidiReadingEventProducer(db, path);
-        }
-
-        @Override
-        public MidiEventProducer getMidiEventProducer() {
-            return generator;
-        }
-    }
 
     final FirebaseDatabase db;
 
@@ -36,5 +23,18 @@ public final class FirebaseEndpointManager extends AbstractEndpointManager<Fireb
     @Override
     MidiEventProducerEntry newEntry(FirebaseDestination dest) throws MidibridgeException {
         return new Entry(dest.getPath(), db);
+    }
+    public final static class Entry implements MidiEventProducerEntry {
+        
+        private final FbMidiReadingEventProducer generator;
+        
+        public Entry(final String path, FirebaseDatabase db) throws MidibridgeException {
+            this.generator = new FbMidiReadingEventProducer(db, path);
+        }
+        
+        @Override
+        public MidiEventProducer getMidiEventProducer() {
+            return generator;
+        }
     }
 }

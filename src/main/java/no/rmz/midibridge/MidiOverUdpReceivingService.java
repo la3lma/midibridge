@@ -18,16 +18,43 @@ public final class MidiOverUdpReceivingService implements MidiEventProducer {
     private final int port;
 
 
+
+    private final UdpServerHandler handler = new UdpServerHandler();
+
+
+    public MidiOverUdpReceivingService(int port) {
+        this.port = port;
+    }
+    @Override
+    public void addMidiReceiver(final MidiReceiver receiver) {
+        checkNotNull(receiver);
+        handler.addMidiReceiver(receiver);
+    }
+
+    public void start() throws MidibridgeException {
+        final EventLoopGroup group = new NioEventLoopGroup();
+        try {
+            final Bootstrap b = new Bootstrap();
+            b.group(group)
+                    .channel(NioDatagramChannel.class)
+                    .handler(handler);
+
+            b.bind(port).sync().channel().closeFuture().await();
+        } catch (InterruptedException ex) {
+            throw new MidibridgeException(ex);
+        } finally {
+            group.shutdownGracefully();
+        }
+    }
+
     public static class UdpServerHandler extends SimpleChannelInboundHandler<DatagramPacket> {
 
         private ByteBuf buf;
-
+        private final Set<MidiReceiver> midiReceivers = new HashSet<>();
 
         public UdpServerHandler() {
             super();
         }
-
-        private final Set<MidiReceiver> midiReceivers = new HashSet<>();
 
         private void sendBytesToMidiReceivers(final byte[] bytes) throws InvalidMidiDataException {
             for (final MidiReceiver r : midiReceivers) {
@@ -62,34 +89,6 @@ public final class MidiOverUdpReceivingService implements MidiEventProducer {
         @Override
         public void channelReadComplete(ChannelHandlerContext ctx) {
             ctx.flush();
-        }
-    }
-
-    private final UdpServerHandler handler = new UdpServerHandler();
-
-    @Override
-    public void addMidiReceiver(final MidiReceiver receiver) {
-        checkNotNull(receiver);
-        handler.addMidiReceiver(receiver);
-    }
-
-    public MidiOverUdpReceivingService(int port) {
-        this.port = port;
-    }
-
-    public void start() throws MidibridgeException {
-        final EventLoopGroup group = new NioEventLoopGroup();
-        try {
-            final Bootstrap b = new Bootstrap();
-            b.group(group)
-                    .channel(NioDatagramChannel.class)
-                    .handler(handler);
-
-            b.bind(port).sync().channel().closeFuture().await();
-        } catch (InterruptedException ex) {
-            throw new MidibridgeException(ex);
-        } finally {
-            group.shutdownGracefully();
         }
     }
 }

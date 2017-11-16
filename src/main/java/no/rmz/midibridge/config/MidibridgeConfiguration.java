@@ -58,7 +58,7 @@ public final class MidibridgeConfiguration extends Configuration {
     }
 
     public List<FirebaseDestination> getFirebaseDestinations() {
-        return firebaseDestinations;
+        return Collections.unmodifiableList(firebaseDestinations);
     }
 
     public void setFirebaseDestinations(final List<FirebaseDestination> firebaseDestinations) {
@@ -76,7 +76,7 @@ public final class MidibridgeConfiguration extends Configuration {
 
     @JsonProperty
     public Collection<HttpEndpointConfig> getHttpDestinations() {
-        return this.httpDestinations;
+        return Collections.unmodifiableCollection(this.httpDestinations);
     }
 
     public void setHttpDestinations(Collection<HttpEndpointConfig> httpDestinations) {

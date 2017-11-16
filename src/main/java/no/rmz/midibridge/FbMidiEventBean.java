@@ -27,6 +27,8 @@ public final class FbMidiEventBean {
     private int instrument;
     private int bendValue;
     private int patch;
+    public FbMidiEventBean() {
+    }
 
     public void setPatch(int patch) {
         this.patch = patch;
@@ -82,8 +84,6 @@ public final class FbMidiEventBean {
         this.instrument = instrumentNumber;
     }
 
-    public FbMidiEventBean() {
-    }
 
     public void setCmd(String cmd) {
         this.cmd = cmd;

@@ -12,11 +12,6 @@ public final class FbMidiReadingEventProducer implements MidiEventProducer {
 
     private final FbMidiEventListener listener;
 
-    @Override
-    public void addMidiReceiver(MidiReceiver receiver) {
-        checkNotNull(receiver);
-        listener.addReceiver(receiver);
-    }
 
     public FbMidiReadingEventProducer(
             final FirebaseDatabase firebaseDatabase,
@@ -28,5 +23,10 @@ public final class FbMidiReadingEventProducer implements MidiEventProducer {
 
         final DatabaseReference pathToMidiMessages = firebaseDatabase.getReference(eventpath);
         pathToMidiMessages.addChildEventListener(listener);
+    }
+    @Override
+    public void addMidiReceiver(MidiReceiver receiver) {
+        checkNotNull(receiver);
+        listener.addReceiver(receiver);
     }
 }
