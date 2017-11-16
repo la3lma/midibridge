@@ -5,6 +5,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import no.rmz.midibridge.MidiEventProducer;
 import no.rmz.midibridge.MidiReceiver;
 import no.rmz.midibridge.MidibridgeException;
+import no.rmz.midibridge.config.FirebaseDatabaseConfig;
 import no.rmz.midibridge.config.MidiRoute;
 import no.rmz.midibridge.config.MidibridgeConfiguration;
 
@@ -12,7 +13,6 @@ public final class MidiRoutingManager {
 
     private final MidiEventProducerMap eventProducerManager;
     private final MidiDeviceManager midiDeviceManger;
-    private final FirebaseEndpointManager firebaseEndpointManager;
     private final UdpEndpointManager udpEndpointManager;
     private final HttpEndpointManager httpEndpointManager;
     private final MidiEventResource resource;
@@ -25,12 +25,22 @@ public final class MidiRoutingManager {
         this.midiDeviceManger = new MidiDeviceManager();
         this.udpEndpointManager = new UdpEndpointManager(eventProducerManager);
         this.httpEndpointManager = new HttpEndpointManager(eventProducerManager);
-        final FirebaseDatabase firebaseDatabase = configuration.getFirebaseDatabaseConfig().getFirebaseDatabase();
-        firebaseEndpointManager = new FirebaseEndpointManager(firebaseDatabase, eventProducerManager);
-        firebaseEndpointManager.addAll(configuration.getFirebaseDestinations());
-        httpEndpointManager.addAll(configuration.getHttpDestinations());
-        udpEndpointManager.addAll(configuration.getUdpDestinations());
-        midiDeviceManger.addAll(configuration.getMidiDestinations());
+        final FirebaseDatabaseConfig firebaseDatabaseConfig = configuration.getFirebaseDatabaseConfig();
+
+        if (firebaseDatabaseConfig != null) {
+            final FirebaseDatabase firebaseDatabase = firebaseDatabaseConfig.getFirebaseDatabase();
+            final FirebaseEndpointManager firebaseEndpointManager = new FirebaseEndpointManager(firebaseDatabase, eventProducerManager);
+            firebaseEndpointManager.addAll(configuration.getFirebaseDestinations());
+        }
+        if (configuration.getHttpDestinations() != null) {
+            httpEndpointManager.addAll(configuration.getHttpDestinations());
+        }
+        if (configuration.getUdpDestinations() != null) {
+            udpEndpointManager.addAll(configuration.getUdpDestinations());
+        }
+        if (configuration.getUdpDestinations() != null) {
+            midiDeviceManger.addAll(configuration.getMidiDestinations());
+        }
 
         // Set up routes.
         setUpRoutes(configuration);
