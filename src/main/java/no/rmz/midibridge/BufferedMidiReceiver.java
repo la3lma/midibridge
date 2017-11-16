@@ -18,12 +18,9 @@ public final class BufferedMidiReceiver implements MidiReceiver {
     public BufferedMidiReceiver(final Receiver recv) {
         this.recv = Preconditions.checkNotNull(recv);
         this.queue = new LinkedBlockingQueue<>(100000);
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    safelySendOldest();
-                }
+        final Runnable runnable = () -> {
+            while (true) {
+                safelySendOldest();
             }
         };
         new Thread(runnable).start();
