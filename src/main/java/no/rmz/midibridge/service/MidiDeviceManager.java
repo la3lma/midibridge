@@ -30,6 +30,7 @@ public final class MidiDeviceManager {
         private Receiver getBuiltinSynthReceiver() throws MidibridgeException {
             try {
                 final Synthesizer synth = MidiSystem.getSynthesizer();
+                synth.open();
                 return synth.getReceiver();
             } catch (MidiUnavailableException e) {
                 throw new MidibridgeException("Couldn't open internal synth", e);

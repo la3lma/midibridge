@@ -35,6 +35,8 @@ firebaseDestinations:
 midiDestinations:
    - id:  toReason
      midiDeviceName: toReason
+   - id: default
+     midiDeviceName: default
 
 
 ##
@@ -63,4 +65,4 @@ midiRoutes:
     - source: defaultHttp
       destination: toReason
     - source: udpMidi
-      destination: toReason
+      destination: default
