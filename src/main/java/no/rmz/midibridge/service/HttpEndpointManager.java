@@ -55,9 +55,9 @@ public final class HttpEndpointManager extends AbstractEndpointManager<HttpEndpo
         @Override
         public void put(final ShortMessage msg) {
             checkNotNull(msg);
-            for (final MidiReceiver r : receivers) {
+            receivers.forEach((r) -> {
                 r.put(msg);
-            }
+            });
         }
         
         @Override
