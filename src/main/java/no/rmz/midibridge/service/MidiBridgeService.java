@@ -16,6 +16,7 @@ public class MidiBridgeService extends Application<MidibridgeConfiguration> {
 
     }
 
+    @SuppressWarnings("SameReturnValue")
     @Override
     public String getName() {
         return "midibridge";

@@ -17,8 +17,6 @@ public final class MidiRoutingManager {
 
     private final MidiEventProducerMap eventProducerManager;
     private final MidiDeviceManager midiDeviceManger;
-    private final UdpEndpointManager udpEndpointManager;
-    private final HttpEndpointManager httpEndpointManager;
     private final MidiEventResource resource;
 
     public MidiRoutingManager(final MidibridgeConfiguration configuration) throws MidibridgeException {
@@ -27,8 +25,8 @@ public final class MidiRoutingManager {
         checkNotNull(configuration);
         this.eventProducerManager = new MidiEventProducerMap();
         this.midiDeviceManger = new MidiDeviceManager();
-        this.udpEndpointManager = new UdpEndpointManager(eventProducerManager);
-        this.httpEndpointManager = new HttpEndpointManager(eventProducerManager);
+        UdpEndpointManager udpEndpointManager = new UdpEndpointManager(eventProducerManager);
+        HttpEndpointManager httpEndpointManager = new HttpEndpointManager(eventProducerManager);
         final FirebaseDatabaseConfig firebaseDatabaseConfig = configuration.getFirebaseDatabaseConfig();
 
         if (firebaseDatabaseConfig != null) {

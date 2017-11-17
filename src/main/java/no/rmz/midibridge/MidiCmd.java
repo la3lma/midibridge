@@ -36,6 +36,7 @@ public enum MidiCmd {
         return noOfArgs;
     }
 
+    @SuppressWarnings("unused")
     MidiCmd(int cmd, int noOfArgs) {
         this.cmd = cmd;
         this.noOfArgs = noOfArgs;

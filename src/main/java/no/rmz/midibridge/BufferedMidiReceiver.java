@@ -3,6 +3,7 @@ package no.rmz.midibridge;
 import com.google.common.base.Preconditions;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
 import org.slf4j.Logger;
@@ -14,16 +15,25 @@ public final class BufferedMidiReceiver implements MidiReceiver {
 
     private final Receiver recv;
     private final BlockingQueue<ShortMessage> queue;
+    private AtomicBoolean shutdown;
 
     public BufferedMidiReceiver(final Receiver recv) {
         this.recv = Preconditions.checkNotNull(recv);
         this.queue = new LinkedBlockingQueue<>(100000);
+        this.shutdown = new AtomicBoolean(false);
         final Runnable runnable = () -> {
-            while (true) {
+            while (!this.shutdown.get()) {
                 safelySendOldest();
             }
         };
         new Thread(runnable).start();
+    }
+
+    /**
+     * When invoked, will stop the sending of MIDI events.
+     */
+    public void stop() {
+        this.shutdown.set(true);
     }
 
     private void safelySendOldest() {
