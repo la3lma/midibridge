@@ -8,8 +8,12 @@ import no.rmz.midibridge.MidibridgeException;
 import no.rmz.midibridge.config.FirebaseDatabaseConfig;
 import no.rmz.midibridge.config.MidiRoute;
 import no.rmz.midibridge.config.MidibridgeConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class MidiRoutingManager {
+
+    private final static Logger LOG = LoggerFactory.getLogger(MidiReceiver.class);
 
     private final MidiEventProducerMap eventProducerManager;
     private final MidiDeviceManager midiDeviceManger;
@@ -28,15 +32,18 @@ public final class MidiRoutingManager {
         final FirebaseDatabaseConfig firebaseDatabaseConfig = configuration.getFirebaseDatabaseConfig();
 
         if (firebaseDatabaseConfig != null) {
+            LOG.info("Configuring firebase endpoint(s)");
             final FirebaseDatabase firebaseDatabase = firebaseDatabaseConfig.getFirebaseDatabase();
-            final FirebaseEndpointManager firebaseEndpointManager =
-                    new FirebaseEndpointManager(firebaseDatabase, eventProducerManager);
+            final FirebaseEndpointManager firebaseEndpointManager
+                    = new FirebaseEndpointManager(firebaseDatabase, eventProducerManager);
             firebaseEndpointManager.addAll(configuration.getFirebaseDestinations());
         }
         if (configuration.getHttpDestinations() != null) {
+            LOG.info("Configuring HTTP endpoint(s)");
             httpEndpointManager.addAll(configuration.getHttpDestinations());
         }
         if (configuration.getUdpDestinations() != null) {
+            LOG.info("Configuring UDP endpoint(s)");
             udpEndpointManager.addAll(configuration.getUdpDestinations());
         }
         if (configuration.getUdpDestinations() != null) {

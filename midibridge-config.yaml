@@ -12,18 +12,23 @@
 ## be optional.
 ##
 
-firebaseDatabaseConfig:
-    configFile: fbmidibridge-1746b45f5da7.json
-    databaseName: fbmidibridge
 
 ##
-## Declare the firebase endpoints that will receive
-## incoming MIDI messages.
+## Uncomment the next two sections to enable a firebase
+## endpoint.
 ##
+# firebaseDatabaseConfig:
+#     configFile: fbmidibridge-1746b45f5da7.json
+#     databaseName: fbmidibridge
 
-firebaseDestinations:
-    - id: testchannel
-      path: testchannel
+# ##
+# ## Declare the firebase endpoints that will receive
+# ## incoming MIDI messages.
+# ##
+
+# firebaseDestinations:
+#     - id: testchannel
+#       path: testchannel
 
 
 ##
@@ -60,8 +65,10 @@ httpDestinations:
 ##
 
 midiRoutes:
-    - source: testchannel
-      destination: toReason
+    ##  Uncomment the next two lines to wire up the firebase testchannel
+    ##  to a "toReason" MIDI channel.
+    # - source: testchannel
+    #   destination: toReason
     - source: defaultHttp
       destination: toReason
     - source: udpMidi
