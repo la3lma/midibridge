@@ -3,7 +3,7 @@ Firebase/REST/UDP  to MIDI bridge
 [![codebeat badge](https://codebeat.co/badges/4d8e97f9-6a84-4d33-a36d-c85421290429)](https://codebeat.co/projects/github-com-la3lma-midibridge-master)
 
 
-[![travis badge](https://travis-ci.org/la3lma/midibridge.svg?branch=master)
+[![travis badge](https://travis-ci.org/la3lma/midibridge.svg?branch=master)](https://travis-ci.org/la3lma/midibridge/builds)
 
 
 What it does
